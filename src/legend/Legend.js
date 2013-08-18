@@ -4,6 +4,8 @@ zChart.Legend = Class.extend({
      * @param chartEl
      * @param opts
      * @param theme
+     * @param onHover
+     * @param onClick
      */
     init: function (chartEl, opts, theme, onHover, onClick) {
         this.chartEl = chartEl;
@@ -97,6 +99,9 @@ zChart.Legend = Class.extend({
      */
     setTitle: function (title) {
         this.title = title;
+        if (this.titleEl) {
+            this.titleEl.text(title);
+        }
     },
     /**
      * Create legend
@@ -106,21 +111,15 @@ zChart.Legend = Class.extend({
         var config = this.config;
         var theme = this.theme;
 
+        if (config.enabled !== true) {
+            return;
+        }
+
         // container
         this.legendEl = $("<div>").addClass("legend").appendTo(this.chartEl);
+        this.legendEl.applyTheme(theme);
         this.legendEl.css({
-            display: "block",
             position: "absolute",
-            overflow: "hidden",
-            padding: theme.padding.join("px ") + "px",
-            "color": theme.color,
-            "font-family": theme.fontFamily,
-            "font-size": theme.fontSize + "px",
-            "font-weight": theme.fontWeight,
-            "font-style": theme.fontStyle,
-            "background-color": theme.bgColor,
-            "border": theme.borderWidth + "px solid transparent",
-            "border-radius": theme.borderRadius + "px",
             "box-sizing": "border-box"
         });
 
@@ -151,13 +150,7 @@ zChart.Legend = Class.extend({
         if (config.title.format) {
             this.titleEl = $("<li>").addClass("title").appendTo(this.listEl);
             this.titleEl.text(this._formatTitle()).height(config.title.height);
-            this.titleEl.css({
-                "color": theme.title.color,
-                "font-size": theme.title.fontSize + "px",
-                "font-weight": theme.title.fontWeight,
-                "font-style": theme.title.fontStyle,
-                "text-align": theme.title.align
-            });
+            this.titleEl.applyTheme(theme.title);
         }
 
         // items
@@ -291,7 +284,6 @@ zChart.Legend = Class.extend({
     /**
      * Handle item click event
      * @param event
-     * @param index
      * @private
      */
     _onClick: function (event) {

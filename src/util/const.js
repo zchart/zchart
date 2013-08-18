@@ -113,6 +113,7 @@ zChart.defaultTheme = {
         borderStyle: "solid",
         borderRadius: 5,
         padding: [5],
+        overflow: "hidden",
         /**
          * Title style
          */
@@ -173,6 +174,7 @@ zChart.defaultConfig = {
      * Title
      */
     title: {
+        enabled: true,
         mainTitle: {
             text: "",
             html: "",
@@ -188,8 +190,8 @@ zChart.defaultConfig = {
      * Legend
      */
     legend: {
-        position: "align",              // align/none
-        align: "right",                 // bottom/right/left/top
+        enabled: true,
+        place: "right",                 // left/right/top/bottom/float
         left: null,
         top: null,
         width: 150,

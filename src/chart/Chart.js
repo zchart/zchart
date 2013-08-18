@@ -12,8 +12,8 @@ zChart.Chart = Class.extend({
         this.theme = {};
         this.config = {};
 
-        this.config = $.extend(true, zChart.defaultConfig, opts);
-        this.theme = $.extend(true, zChart.defaultTheme, theme);
+        this.config = $.extend(true, {}, zChart.defaultConfig, opts);
+        this.theme = $.extend(true, {}, zChart.defaultTheme, theme);
 
         this.containerEl = null;
         this.chartEl = null;
@@ -240,20 +240,19 @@ zChart.Chart = Class.extend({
         left = 0;
         top = titleHeight;
 
-        var position = this.config.legend.position;
-        var align = this.config.legend.align;
-        if (position === "align") {
-            if (align === "left") {
+        var place = this.config.legend.place;
+        if (this.config.legend.enabled && place !== "float") {
+            if (place === "left") {
                 width -= legendWidth;
                 left = legendWidth;
                 this.legend.setPosition(0, titleHeight);
             }
-            else if (align === "top") {
+            else if (place === "top") {
                 height -= legendHeight;
                 top += legendHeight;
                 this.legend.setPosition(0, titleHeight);
             }
-            else if (align === "bottom") {
+            else if (place === "bottom") {
                 height -= legendHeight;
                 this.legend.setPosition(0, titleHeight + height);
             }

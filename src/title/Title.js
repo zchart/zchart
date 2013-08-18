@@ -35,10 +35,11 @@ zChart.Title = Class.extend({
      * @param title
      */
     setTitle: function (title) {
-        if (!title) {
+        if (!this.titleEl || !title) {
             return;
         }
-        else if (title.mainTitle) {
+
+        if (title.mainTitle) {
             if (title.mainTitle.text) {
                 this.mainTitleEl.text(title.mainTitle.text);
             }
@@ -80,6 +81,10 @@ zChart.Title = Class.extend({
      */
     _createUI: function () {
         var config, theme, title;
+
+        if (this.config.enabled !== true) {
+            return;
+        }
 
         // title container
         this.titleEl = $("<div>").addClass("title").appendTo(this.chartEl);

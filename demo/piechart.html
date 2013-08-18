@@ -45,6 +45,11 @@
 
             // pie 1
             var chart1 = new zChart.PieChart({
+                chart: {
+                    container: "chart-1",
+                    width: 400,
+                    height: 300
+                },
                 title: {
                     mainTitle: {
                         text: "2012 Smart-phone Market Share Top-5",
@@ -56,16 +61,11 @@
                     }
                 },
                 legend: {
-                    align: "left",
+                    place: "left",
                     width: 120
                 },
-                chart: {
-                    container: "chart-1",
-                    width: 400,
-                    height: 300,
-                    pie: {
-                        unit: "M"
-                    }
+                pie: {
+                    unit: "M"
                 }
             });
 
@@ -85,22 +85,23 @@
 
             // pie 2
             var option2 = {
+                chart: {
+                    width: 400,
+                    height: 300
+                },
                 title: {
+                    enabled: true,
                     mainTitle: {
                         text: "All Brands -- Area Market Share",
                         height: 50
                     }
                 },
                 legend: {
-                    align: "right",
+                    place: "right",
                     width: 120
                 },
-                chart: {
-                    width: 400,
-                    height: 300,
-                    pie: {
-                        unit: "M"
-                    }
+                pie: {
+                    unit: "M"
                 }
             };
 
