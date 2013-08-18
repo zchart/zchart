@@ -153,5 +153,49 @@ zChart.ctx = function (canvas) {
         }
     }
 
+    fn.prototype.applyTheme = function (theme) {
+
+    };
+
     return new fn(context);
 };
+
+/**
+ * Apply predefined style to dom
+ */
+$.fn.extend({
+    applyTheme: function (theme) {
+        if (typeof theme !== "object") {
+            return this;
+        }
+
+        var cssMap, name, value, suffix;
+        var style = {};
+
+        for (var key in theme) {
+            cssMap = zChart.cssMap[key];
+            if (typeof cssMap === "undefined") {
+                continue;
+            }
+
+            name = cssMap.name || key;
+            name = name.replace(/([A-Z])/g, "-$1").toLowerCase();
+            suffix = cssMap.suffix || "";
+            value = theme[key];
+
+            if ($.isArray(value)) {
+                value = value.join(" " + suffix);
+            }
+            else {
+                value += suffix;
+            }
+
+            style[name] = value;
+        }
+
+        if (style !== {}) {
+            this.css(style);
+        }
+        return this;
+    }
+});

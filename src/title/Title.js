@@ -59,7 +59,6 @@ zChart.Title = Class.extend({
      * Re-layout
      */
     layout: function () {
-
     },
     /**
      * Get title div width
@@ -84,39 +83,20 @@ zChart.Title = Class.extend({
 
         // title container
         this.titleEl = $("<div>").addClass("title").appendTo(this.chartEl);
-        this.titleEl.css({
-            display: "block",
-            position: "absolute",
-            left: "0",
-            top: "0",
-            width: "100%",
-            overflow: "hidden"
-        });
+        this.titleEl.applyTheme(this.theme);
 
         // create title
         for (var type in this.config) {
             config = this.config[type];
             theme = this.theme[type];
 
-            if (config.text === "" && config.html === "") {
-                continue;
-            }
-
             title = $("<div>").addClass(type).appendTo(this.titleEl);
+            title.applyTheme(theme);
             title.height(config.height);
 
             if (config.text !== "") {
                 title.text(config.text);
-                title.css({
-                    "text-align": theme.align,
-                    "color": theme.color,
-                    "font-family": theme.fontFamily,
-                    "font-size": theme.fontSize + "px",
-                    "font-weight": theme.fontWeight,
-                    "font-style": theme.fontStyle,
-                    "line-height": type === "mainTitle" ? config.height + "px" : null,
-                    "overflow": "hidden"
-                });
+                title.css({"line-height": type === "mainTitle" ? config.height + "px" : ""});
             }
             else if (config.html !== "") {
                 title.html(config.html);

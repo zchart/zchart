@@ -1,5 +1,5 @@
 // to suppress warning of canvas
-function stub () {
+function zChart () {
     this.fillStyle = function (a) {};
     this.strokeStyle = function (a) {};
     this.textBaseline = function (a) {};
@@ -12,3 +12,4 @@ function stub () {
     this.textAlign = function (a) {};
     this.shadowColor = function (a) {};
 }
+

@@ -24,7 +24,7 @@ zChart.PieChart = zChart.Chart.extend({
      */
     setData: function (data) {
         this._super(data);
-        this._layoutItems();
+        this._layoutItems(false);
         this._draw();
     },
     /**
@@ -32,7 +32,7 @@ zChart.PieChart = zChart.Chart.extend({
      * @private
      */
     _layout: function () {
-        var config = this.config.chart.pie;
+        var config = this.config.pie;
         this._super();
 
         this.radius = Math.min(this.canvasEl.width(), this.canvasEl.height()) / 2;
@@ -53,7 +53,7 @@ zChart.PieChart = zChart.Chart.extend({
         var item, data, fill, legend = [];
         var i, sum, ratio;
         var start, end, dir, adir, quarter, pi2 = Math.PI * 2;
-        var config = this.config.chart.pie;
+        var config = this.config.pie;
         var groupValue = 0, count;
 
         if (!this.data || this.data.length === 0) {
@@ -111,7 +111,7 @@ zChart.PieChart = zChart.Chart.extend({
             data = this.data[i];
             ratio = sum === 0 ? 0 : data.value / sum;
             end = start + pi2 * ratio;
-            fill = this.theme.colors[i];
+            fill = this.theme.chart.colors[i];
 
             // calc dir, used to decide draw sequence
             dir = ((start + end) / 2) % pi2;
@@ -183,7 +183,7 @@ zChart.PieChart = zChart.Chart.extend({
      * @private
      */
     _getPoints: function (item) {
-        var config = this.config.chart.pie;
+        var config = this.config.pie;
         var dir = (item.start + item.end) / 2;
         var r2 = config.innerRadius * item.radius;
 
@@ -217,7 +217,7 @@ zChart.PieChart = zChart.Chart.extend({
      * @private
      */
     _formatLabel: function (text, value, ratio) {
-        var config = this.config.chart.pie;
+        var config = this.config.pie;
 
         var label = config.label.format;
         value = zChart.formatNumber(value, config.label.fraction);
@@ -234,7 +234,7 @@ zChart.PieChart = zChart.Chart.extend({
      * @private
      */
     _draw: function () {
-        var config = this.config.chart.pie;
+        var config = this.config.pie;
         var i, item;
         var tilt = config.tilt > 0 && config.tilt <= 1 ? (1 - config.tilt) : 1;
         var pos = [];
@@ -284,8 +284,8 @@ zChart.PieChart = zChart.Chart.extend({
      * @private
      */
     _drawLabel: function (c, item, pos) {
-        var config = this.config.chart.pie;
-        var theme = this.theme.chart.pie;
+        var config = this.config.pie;
+        var theme = this.theme.pie;
         var angle = (item.start + item.end) / 2;
         var offset = config.label.radius;
         var align;
@@ -342,8 +342,8 @@ zChart.PieChart = zChart.Chart.extend({
      * @private
      */
     _drawSector: function (c, item, mask, pos) {
-        var config = this.config.chart.pie;
-        var theme = this.theme.chart.pie;
+        var config = this.config.pie;
+        var theme = this.theme.pie;
         var depth = config.depth;
         var PI = Math.PI;
         var cx = item.cx,
@@ -543,7 +543,7 @@ zChart.PieChart = zChart.Chart.extend({
      * @private
      */
     _toggleItem: function (index, flag) {
-        var config = this.config.chart.pie;
+        var config = this.config.pie;
         var cx, cy;
         var start, end, dir, radian;
         var offset = config.expandOffset;
@@ -608,7 +608,7 @@ zChart.PieChart = zChart.Chart.extend({
      * @private
      */
     _expandItem: function (item) {
-        var config = this.config.chart.pie;
+        var config = this.config.pie;
         var cx, cy;
         var radian;
         var offset = config.expandOffset;
