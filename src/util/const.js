@@ -176,7 +176,7 @@ zChart.defaultConfig = {
      * Title
      */
     title: {
-        enabled: true,
+        enabled: false,
         mainTitle: {
             text: "",
             html: "",
@@ -192,7 +192,7 @@ zChart.defaultConfig = {
      * Legend
      */
     legend: {
-        enabled: true,
+        enabled: false,
         place: "right",                 // left/right/top/bottom/float
         left: null,
         top: null,
@@ -212,7 +212,7 @@ zChart.defaultConfig = {
         toggle: true
     },
     tooltip: {
-        enabled: true,
+        enabled: false,
         format: "<serial>: <span style='font-size:1.2em;font-weight:bold;'><value></span> <unit>",
         fraction: 2
     },

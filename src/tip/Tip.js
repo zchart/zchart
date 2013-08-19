@@ -14,6 +14,7 @@ zChart.Tip = Class.extend({
 
         this._createUI();
         this._bindEvents();
+        this.hide();
     },
     /**
      * Set tip content
@@ -27,7 +28,6 @@ zChart.Tip = Class.extend({
 
         var tip = this._formatTip();
         this.tipEl.html(tip);
-        console.log(data.color);
         this.tipEl.css("border-color", data.color);
 
         this.width = this.tipEl.outerWidth(true);
