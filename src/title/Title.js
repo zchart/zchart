@@ -18,6 +18,10 @@ zChart.Title = Class.extend({
         this.mainTitleEl = null;
         this.subTitleEl = null;
 
+        if (this.config.enabled !== true) {
+            return;
+        }
+
         // create UI
         this._createUI();
     },
@@ -82,20 +86,20 @@ zChart.Title = Class.extend({
     _createUI: function () {
         var config, theme, title;
 
-        if (this.config.enabled !== true) {
-            return;
-        }
-
         // title container
-        this.titleEl = $("<div>").addClass("title").appendTo(this.chartEl);
+        this.titleEl = $("<div>").addClass("zchart-title").appendTo(this.chartEl);
         this.titleEl.applyTheme(this.theme);
 
         // create title
         for (var type in this.config) {
+            if (type !== "mainTitle" && type !== "subTitle") {
+                continue;
+            }
+
             config = this.config[type];
             theme = this.theme[type];
 
-            title = $("<div>").addClass(type).appendTo(this.titleEl);
+            title = $("<div>").addClass("zchart-" + type).appendTo(this.titleEl);
             title.applyTheme(theme);
             title.height(config.height);
 

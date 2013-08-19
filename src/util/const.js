@@ -33,7 +33,6 @@ zChart.cssMap = {
     },
     padding: {
         suffix: "px"
-
     },
     margin: {
         suffix: "px"
@@ -131,13 +130,15 @@ zChart.defaultTheme = {
     tooltip: {
         color: "#000000",
         background: "#F1F1F1",
-        borderWidth: 2,
+        borderWidth: 1,
+        borderStyle: "solid",
         borderRadius: 5,
         padding: [3, 5, 3, 5],
         fontFamily: "Tahoma,Arial,sans-serif",
         fontSize: 12,
         fontWeight: "normal",
-        opacity: 0.85
+        opacity: 0.85,
+        boxShadow: "rgba(0, 0, 0, 0.3) 1px 1px 2px 1px"
     },
     xAxis: {},
     yAxis: {},
@@ -166,6 +167,7 @@ zChart.defaultConfig = {
      * Chart container
      */
     chart: {
+        type: "",
         container: null,
         width: "100%",
         height: "100%"
@@ -210,6 +212,7 @@ zChart.defaultConfig = {
         toggle: true
     },
     tooltip: {
+        enabled: true,
         format: "<serial>: <span style='font-size:1.2em;font-weight:bold;'><value></span> <unit>",
         fraction: 2
     },

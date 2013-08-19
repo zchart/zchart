@@ -1,3 +1,7 @@
+/**
+ * Chart Legend
+ * @type {*}
+ */
 zChart.Legend = Class.extend({
     /**
      * Initialize class instance
@@ -23,6 +27,10 @@ zChart.Legend = Class.extend({
         this.category = "";
         this.unit = "";
 
+        if (this.config.enabled !== true) {
+            return;
+        }
+
         this._createUI();
         this._bindEvents();
     },
@@ -30,6 +38,9 @@ zChart.Legend = Class.extend({
      * Destroy
      */
     destroy: function () {
+        if (!this.legendEl) {
+            return;
+        }
         this.listEl.undelegate();
         this.legendEl.remove();
         this.legendEl = null;
@@ -38,11 +49,8 @@ zChart.Legend = Class.extend({
      * Re-layout
      */
     layout: function () {
-        if (this.config.position === "none") {
-            this.legendEl.width(0).height(0);
-        }
-        else {
-            //
+        if (!this.legendEl) {
+            return;
         }
     },
     /**
@@ -65,7 +73,9 @@ zChart.Legend = Class.extend({
      * @param top
      */
     setPosition: function (left, top) {
-        this.legendEl.css({left: left + "px", top: top + "px"});
+        if (this.legendEl) {
+            this.legendEl.css({left: left + "px", top: top + "px"});
+        }
     },
     /**
      * Set legend content
@@ -111,12 +121,8 @@ zChart.Legend = Class.extend({
         var config = this.config;
         var theme = this.theme;
 
-        if (config.enabled !== true) {
-            return;
-        }
-
         // container
-        this.legendEl = $("<div>").addClass("legend").appendTo(this.chartEl);
+        this.legendEl = $("<div>").addClass("zchart-legend").appendTo(this.chartEl);
         this.legendEl.applyTheme(theme);
         this.legendEl.css({
             position: "absolute",
@@ -148,7 +154,7 @@ zChart.Legend = Class.extend({
 
         // title
         if (config.title.format) {
-            this.titleEl = $("<li>").addClass("title").appendTo(this.listEl);
+            this.titleEl = $("<li>").addClass("zchart-legend-title").appendTo(this.listEl);
             this.titleEl.text(this._formatTitle()).height(config.title.height);
             this.titleEl.applyTheme(theme.title);
         }
@@ -157,7 +163,7 @@ zChart.Legend = Class.extend({
         for (i = 0; i < items.length; i++) {
             item = items[i];
 
-            li = $("<li>").addClass("item").appendTo(this.listEl);
+            li = $("<li>").addClass("zchart-legend-item").appendTo(this.listEl);
             li.data("index", i).data("visible", true);
             li.css({
                 "border-bottom": "1px solid transparent",
@@ -165,7 +171,7 @@ zChart.Legend = Class.extend({
             });
 
             // marker
-            marker = $("<div>").addClass("marker").appendTo(li);
+            marker = $("<div>").addClass("zchart-legend-marker").appendTo(li);
             marker.width(15).height(15);
             marker.css({
                 display: "block",
@@ -176,7 +182,7 @@ zChart.Legend = Class.extend({
             });
 
             // label
-            label = $("<label>").addClass("label").appendTo(li);
+            label = $("<label>").addClass("zchart-legend-label").appendTo(li);
             label.text(item.text);
             label.css({
                 position: "absolute",
@@ -190,7 +196,7 @@ zChart.Legend = Class.extend({
 
             // value
             if (config.value.format) {
-                value = $("<label>").addClass("value").appendTo(li);
+                value = $("<label>").addClass("zchart-legend-value").appendTo(li);
                 value.text(this._formatValue(item.value, config.value.fraction)).width(config.value.width);
                 value.css({
                     position: "absolute",
@@ -268,7 +274,7 @@ zChart.Legend = Class.extend({
     _onHover: function (event, flag) {
         var item = $(event.currentTarget);
         var index = item.data("index");
-        var label = item.children(".label");
+        var label = item.children(".zchart-legend-label");
 
         if (flag) {
             label.css("text-decoration", "underline");

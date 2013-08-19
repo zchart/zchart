@@ -44,8 +44,9 @@
             }
 
             // pie 1
-            var chart1 = new zChart.PieChart({
+            var chart1 = zChart.create({
                 chart: {
+                    type: "pie",
                     container: "chart-1",
                     width: 400,
                     height: 300
@@ -86,6 +87,7 @@
             // pie 2
             var option2 = {
                 chart: {
+                    type: "pie",
                     width: 400,
                     height: 300
                 },
@@ -105,7 +107,7 @@
                 }
             };
 
-            var chart2 = new zChart.PieChart(option2);
+            var chart2 = zChart.create(option2);
             chart2.render("chart-2");
             chart2.setData(data2["iPhone 5"]);
 
@@ -170,27 +172,27 @@
     </div>
     <div class="option">
         <label>Depth</label>
-        <input name="depth" target="option.chart.pie" type="number" min="0" max="10" value="0" datatype="number">
+        <input name="depth" target="option.pie" type="number" min="0" max="10" value="0" datatype="number">
         <label>px</label>
     </div>
     <div class="option">
         <label>Tilt</label>
-        <input name="tilt" target="option.chart.pie" type="number" min="0" max="100" value="0" datatype="number" factor="0.01">
+        <input name="tilt" target="option.pie" type="number" min="0" max="100" value="0" datatype="number" factor="0.01">
         <label>%</label>
     </div>
     <div class="option">
         <label>Expand Offset</label>
-        <input name="expandOffset" target="option.chart.pie" type="number" min="10" max="30" value="10" datatype="number">
+        <input name="expandOffset" target="option.pie" type="number" min="10" max="30" value="10" datatype="number">
         <label>px</label>
     </div>
     <div class="option">
         <label>Label Radius</label>
-        <input name="radius" target="option.chart.pie.label" type="number" min="-30" max="30" value="-30" datatype="number">
+        <input name="radius" target="option.pie.label" type="number" min="-30" max="30" value="-30" datatype="number">
         <label>px</label>
     </div>
     <div class="option">
         <label></label>
-        <input name="position" target="option.legend" type="checkbox" checked true="align" false="none" datatype="boolean" style="margin-top:6px;" >
+        <input name="enabled" target="option.legend" type="checkbox" checked datatype="boolean" style="margin-top:6px;" >
         <label>Legend</label>
     </div>
 </div>
@@ -200,7 +202,7 @@
     </div>
     <div class="option">
         <label>Line Width</label>
-        <input name="lineWidth" target="theme.chart.pie" type="number" min="0" max="2" value="1" datatype="number">
+        <input name="lineWidth" target="theme.pie" type="number" min="0" max="2" value="1" datatype="number">
         <label>px</label>
     </div>
 </div>
@@ -218,8 +220,7 @@
                 value = parseInt(value, 10) * factor;
             }
             else if (dataType === "boolean") {
-                value = event.currentTarget.checked ? input.attr("true") || true : input.attr("false") || false;
-                console.log(value, event.currentTarget);
+                value = event.currentTarget.checked;
             }
 
             var option = chart.getOptions();

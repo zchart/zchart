@@ -679,3 +679,6 @@ zChart.PieChart = zChart.Chart.extend({
         return null;
     }
 });
+
+// register
+zChart.regChart("pie", zChart.PieChart);

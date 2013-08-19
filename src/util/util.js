@@ -184,7 +184,7 @@ $.fn.extend({
             value = theme[key];
 
             if ($.isArray(value)) {
-                value = value.join(" " + suffix);
+                value = value.join(suffix + " ") + suffix;
             }
             else {
                 value += suffix;

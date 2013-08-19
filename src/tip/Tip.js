@@ -1,8 +1,16 @@
+/**
+ * Chart Item Tooltip
+ * @type {*}
+ */
 zChart.Tip = Class.extend({
     init: function (chartEl, opts, theme) {
         this.chartEl = chartEl;
         this.config = opts;
         this.theme = theme;
+
+        if (this.config.enabled !== true) {
+            return;
+        }
 
         this._createUI();
         this._bindEvents();
@@ -12,10 +20,14 @@ zChart.Tip = Class.extend({
      * @param data
      */
     setData: function (data) {
+        if (!this.tipEl) {
+            return;
+        }
         this.data = data;
 
         var tip = this._formatTip();
         this.tipEl.html(tip);
+        console.log(data.color);
         this.tipEl.css("border-color", data.color);
 
         this.width = this.tipEl.outerWidth(true);
@@ -29,6 +41,10 @@ zChart.Tip = Class.extend({
     setPosition: function (x, y) {
         var offset = 10;
         var left, top, width, height;
+
+        if (!this.tipEl) {
+            return;
+        }
 
         width = this.width;
         height = this.height;
@@ -53,20 +69,26 @@ zChart.Tip = Class.extend({
      * Show tip
      */
     show: function () {
-        this.tipEl.show();
+        if (this.tipEl) {
+            this.tipEl.show();
+        }
     },
     /**
      * Hide tip
      */
     hide: function () {
-        this.tipEl.hide();
+        if (this.tipEl) {
+            this.tipEl.hide();
+        }
     },
     /**
      * Destroy instance
      */
     destroy: function () {
-        this.tipEl.unbind().remove();
-        this.tipEl = null;
+        if (this.tipEl) {
+            this.tipEl.unbind().remove();
+            this.tipEl = null;
+        }
     },
     /**
      * Format tip content
@@ -96,19 +118,10 @@ zChart.Tip = Class.extend({
         var theme = this.theme;
 
         this.tipEl = $("<div>").appendTo(document.body);
+        this.tipEl.applyTheme(theme);
         this.tipEl.css({
-            display: "none",
             position: "absolute",
-            color: theme.color,
-            padding: theme.padding.join("px ") + "px",
-            "background-color": theme.bgColor,
-            "border": theme.borderWidth + "px solid transparent",
-            "border-radius": theme.borderRadius + "px",
-            "font-family": theme.fontFamily,
-            "font-size": theme.fontSize + "px",
-            "font-weight": theme.fontWeight,
-            "box-shadow": "rgba(0, 0, 0, 0.3) 1px 1px 2px 1px",
-            "opacity": theme.opacity
+            "box-shadow": "rgba(0, 0, 0, 0.3) 1px 1px 2px 1px"
         });
     },
     /**
