@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Column Chart Demo</title>
+    <script src="../lib/Class.js"></script>
+    <script src="../lib/jquery-2.0.3.js"></script>
+    <script src="../src/zChart.js"></script>
+    <script src="../src/util/util.js"></script>
+    <script src="../src/util/const.js"></script>
+    <script src="../src/title/Title.js"></script>
+    <script src="../src/legend/Legend.js"></script>
+    <script src="../src/tip/Tip.js"></script>
+    <script src="../src/chart/Chart.js"></script>
+    <script src="../src/chart/XYChart.js"></script>
+    <script src="../src/chart/ColumnChart.js"></script>
+    <script>
+        var chart1;
+        $(function() {
+            var data1 = [];
+            for (var i = 0; i < 10; i++) {
+                data1.push({
+                    year: 2001 + i + "",
+                    value1: Math.floor(Math.random() * 20 + 5),
+                    value2: Math.floor(Math.random() * 15 + 3)
+                });
+            }
+
+            // pie 1
+            var chart1 = zChart.create({
+                chart: {
+                    type: "column",
+                    width: 600,
+                    height: 300
+                },
+                title: {
+                    enabled: true,
+                    mainTitle: {
+                        text: "Average Rain Volume",
+                        height: 30
+                    }
+                },
+                legend: {
+                    enabled: true,
+                    place: "left",
+                    width: 120
+                },
+                tooltip: {
+                    enabled: true
+                },
+                pie: {
+                    unit: "M"
+                }
+            });
+
+            chart1.render("chart-1");
+            chart1.setData(data1);
+        });
+    </script>
+    <style>
+        body {
+            font-family: Tahoma,arial,sans-serif;
+            font-size: 12px;
+        }
+        .charts {
+            display: block;
+            position: relative;
+        }
+        .charts > div {
+            float: left;
+            background-color: #E1E2E3;
+            margin-right: 5px;
+        }
+    </style>
+</head>
+<body>
+<div class="charts">
+    <div id="chart-1"></div>
+    <div id="chart-2"></div>
+</div>
+</body>
+</html>

@@ -64,12 +64,12 @@ zChart.PieChart = zChart.Chart.extend({
         // get sum
         sum = 0;
         for (i = 0; i < this.data.length; i++) {
-            sum += this.data[i].value;
+            sum += this.data[i][config.valueField];
         }
 
         // sort data
         if (!test) {
-            zChart.sortObjects(this.data, "value", false);
+            zChart.sortObjects(this.data, config.valueField, false);
 
             // check min ratio
             i = 0;
@@ -77,7 +77,7 @@ zChart.PieChart = zChart.Chart.extend({
             if (config.minRatio > 0) {
                 for (i = 0; i < this.data.length; i++) {
                     count++;
-                    if (this.data[i].value * 100 / sum < config.minRatio) {
+                    if (this.data[i][config.valueField] * 100 / sum < config.minRatio) {
                         break;
                     }
                 }
@@ -93,15 +93,14 @@ zChart.PieChart = zChart.Chart.extend({
             // group small values
             if (count > 1 && count < this.data.length) {
                 for (i = count - 1; i < this.data.length; i++) {
-                    groupValue += this.data[i].value;
+                    groupValue += this.data[i][config.valueField];
                 }
 
-                this.data[count - 1].value = groupValue;
-                this.data[count - 1].text = config.groupLabel;
+                this.data[count - 1][config.valueField] = groupValue;
+                this.data[count - 1][config.textField] = config.groupLabel;
                 this.data[count - 1].grouped = true;
 
                 this.data.splice(count);
-                console.log(this.data.length, this.data);
             }
         }
 
@@ -109,7 +108,7 @@ zChart.PieChart = zChart.Chart.extend({
         start = config.startAngle * pi2 / 360;
         for (i = 0; i < this.data.length; i++) {
             data = this.data[i];
-            ratio = sum === 0 ? 0 : data.value / sum;
+            ratio = sum === 0 ? 0 : data[config.valueField] / sum;
             end = start + pi2 * ratio;
             fill = this.theme.chart.colors[i];
 
@@ -136,12 +135,11 @@ zChart.PieChart = zChart.Chart.extend({
 
             item = {
                 index: i,
-                name: data.name,
-                text: data.text,
-                value: data.value,
+                text: data[config.textField],
+                value: data[config.valueField],
                 unit: config.unit,
                 data: data.data,
-                label: this._formatLabel(data.text, data.value, ratio * 100),
+                label: this._formatLabel(data[config.textField], data[config.valueField], ratio * 100),
                 ratio: ratio,
                 cx: 0,
                 cy: 0,
@@ -553,11 +551,11 @@ zChart.PieChart = zChart.Chart.extend({
         // save old value
         oldItems = this.items;
         if (!flag) {
-            this.data[index]._value = this.data[index].value;
-            this.data[index].value = 0;
+            this.data[index]._value = this.data[index][config.valueField];
+            this.data[index][config.valueField] = 0;
         }
         else {
-            this.data[index].value = this.data[index]._value;
+            this.data[index][config.valueField] = this.data[index]._value;
         }
 
         // re-calc

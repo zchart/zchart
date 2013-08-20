@@ -216,8 +216,14 @@ zChart.defaultConfig = {
         format: "<serial>: <span style='font-size:1.2em;font-weight:bold;'><value></span> <unit>",
         fraction: 2
     },
-    xAxis: {},
-    yAxis: {},
+    xAxis: {
+        enabled: true,
+        serials: []
+    },
+    yAxis: {
+        enabled: true,
+        serials: []
+    },
     pie: {
         startAngle: -90,
         maxCount: 10,
@@ -230,6 +236,8 @@ zChart.defaultConfig = {
         margin: 5,
         unit: "",
         innerRadius: 0,
+        textField: "text",
+        valueField: "value",
         label: {
             format: "<ratio>%",
             fraction: 2,

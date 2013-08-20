@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>PieChart Demo</title>
+    <title>Pie Chart Demo</title>
     <script src="../lib/Class.js"></script>
     <script src="../lib/jquery-2.0.3.js"></script>
     <script src="../src/zChart.js"></script>
@@ -14,7 +14,7 @@
     <script src="../src/chart/Chart.js"></script>
     <script src="../src/chart/PieChart.js"></script>
     <script>
-        var chart;
+        var chart1, chart2;
         $(function() {
             var data1 = [];
             var data2 = {};
@@ -44,7 +44,7 @@
             }
 
             // pie 1
-            var chart1 = zChart.create({
+            chart1 = zChart.create({
                 chart: {
                     type: "pie",
                     container: "chart-1",
@@ -75,7 +75,6 @@
                 }
             });
 
-            chart = chart1;
             chart1.render();
             chart1.setData(data1);
             chart1.addListener("click", function (event, data) {
@@ -116,11 +115,9 @@
                 }
             };
 
-            var chart2 = zChart.create(option2);
+            chart2 = zChart.create(option2);
             chart2.render("chart-2");
             chart2.setData(data2["iPhone 5"]);
-
-            // customize pie 1
         });
     </script>
     <style>
