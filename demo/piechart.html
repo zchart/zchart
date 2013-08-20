@@ -155,7 +155,6 @@
             line-height: 25px;
         }
         .option > label:first-child {
-            min-width: 30px;
             padding-right: 3px;
             padding-left: 10px;
             text-align: right;
@@ -197,6 +196,11 @@
         <label>px</label>
     </div>
     <div class="option">
+        <label>Inner Radius</label>
+        <input name="innerRadius" target="option.pie" type="number" min="0" max="50" value="0" datatype="number" factor="0.01">
+        <label>%</label>
+    </div>
+    <div class="option">
         <label></label>
         <input name="enabled" target="option.legend" type="checkbox" checked datatype="boolean" style="margin-top:6px;" >
         <label>Legend</label>
@@ -229,8 +233,8 @@
                 value = event.currentTarget.checked;
             }
 
-            var option = chart.getOptions();
-            var theme = chart.getTheme();
+            var option = chart1.getOptions();
+            var theme = chart1.getTheme();
             var options = {option: option, theme: theme};
 
             var path = input.attr("target").split(".");
@@ -242,10 +246,10 @@
             obj[name] = value;
 
             if (path[0] === "option") {
-                chart.setOptions(options[path[0]]);
+                chart1.setOptions(options[path[0]]);
             }
             else {
-                chart.setTheme(options[path[0]]);
+                chart1.setTheme(options[path[0]]);
             }
         });
     });

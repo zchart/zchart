@@ -121,6 +121,23 @@ zChart.formatNumber = function (value, fraction) {
 };
 
 /**
+ * Format text
+ * @param fmt
+ * @param value
+ */
+zChart.formatText = function (fmt, value) {
+    var text = fmt;
+    var re;
+
+    for (var name in value) {
+        re = new RegExp("<" + name + ">", "g");
+        text = text.replace(re, value[name]);
+    }
+
+    return text;
+};
+
+/**
  * Make context2d to support link call
  * @param context
  */

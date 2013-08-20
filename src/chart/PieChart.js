@@ -139,7 +139,6 @@ zChart.PieChart = zChart.Chart.extend({
                 value: data[config.valueField],
                 unit: config.unit,
                 data: data.data,
-                label: this._formatLabel(data[config.textField], data[config.valueField], ratio * 100),
                 ratio: ratio,
                 cx: 0,
                 cy: 0,
@@ -155,6 +154,13 @@ zChart.PieChart = zChart.Chart.extend({
                 maskColor: zChart.getMaskColor(i),
                 grouped: false
             };
+
+            item.label = zChart.formatText(config.label.format, {
+                text: item.text,
+                value: zChart.formatNumber(item.value, config.label.fraction),
+                ratio: zChart.formatNumber(item.ratio * 100, config.label.fraction)
+            });
+
             this.items.push(item);
             start = end;
 
@@ -176,58 +182,6 @@ zChart.PieChart = zChart.Chart.extend({
         return this.items.length;
     },
     /**
-     * Calc point position
-     * @param item
-     * @private
-     */
-    _getPoints: function (item) {
-        var config = this.config.pie;
-        var dir = (item.start + item.end) / 2;
-        var r2 = config.innerRadius * item.radius;
-
-        var cos1 = Math.cos(item.start);
-        var sin1 = Math.sin(item.start);
-        var cos2 = Math.cos(item.end);
-        var sin2 = Math.sin(item.end);
-        var cos3 = Math.cos(dir);
-        var sin3 = Math.sin(dir);
-
-        return {
-            x1: item.cx + item.radius * cos1,
-            y1: item.cy + item.radius * sin1,
-            x2: item.cx + item.radius * cos2,
-            y2: item.cy + item.radius * sin2,
-            x3: item.cx + item.radius * cos3,
-            y3: item.cy + item.radius * sin3,
-            x4: item.cx + (item.radius + config.label.radius) * cos3,
-            y4: item.cy + (item.radius + config.label.radius) * sin3,
-            x5: item.cx + r2 * cos1,
-            y5: item.cy + r2 * sin1,
-            x6: item.cx + r2 * cos2,
-            y6: item.cy + r2 * sin2
-        }
-    },
-    /**
-     * Format text
-     * @param text
-     * @param value
-     * @param ratio
-     * @private
-     */
-    _formatLabel: function (text, value, ratio) {
-        var config = this.config.pie;
-
-        var label = config.label.format;
-        value = zChart.formatNumber(value, config.label.fraction);
-        ratio = zChart.formatNumber(ratio, config.label.fraction);
-
-        label = label.replace(/<value>/g, value);
-        label = label.replace(/<ratio>/g, ratio);
-        label = label.replace(/<text>/g, text);
-
-        return label;
-    },
-    /**
      * Draw chart onto canvas
      * @private
      */
@@ -235,7 +189,6 @@ zChart.PieChart = zChart.Chart.extend({
         var config = this.config.pie;
         var i, item;
         var tilt = config.tilt > 0 && config.tilt <= 1 ? (1 - config.tilt) : 1;
-        var pos = [];
 
         // clear canvas
         this._clearCanvas(this.canvas);
@@ -255,10 +208,8 @@ zChart.PieChart = zChart.Chart.extend({
                 continue;
             }
 
-            pos[i] = this._getPoints(item);
-
-            this._drawSector(this.context, item, false, pos[i]);
-            this._drawSector(this.contextMask, item, true, pos[i]);
+            this._drawSector(this.context, item, false);
+            this._drawSector(this.contextMask, item, true);
         }
 
         // draw labels
@@ -268,7 +219,7 @@ zChart.PieChart = zChart.Chart.extend({
                 continue;
             }
 
-            this._drawLabel(this.context, item, pos[i]);
+            this._drawLabel(this.context, item);
         }
 
         this.context.restore();
@@ -278,10 +229,9 @@ zChart.PieChart = zChart.Chart.extend({
      * Draw label for a slice
      * @param c
      * @param item
-     * @param pos
      * @private
      */
-    _drawLabel: function (c, item, pos) {
+    _drawLabel: function (c, item) {
         var config = this.config.pie;
         var theme = this.theme.pie;
         var angle = (item.start + item.end) / 2;
@@ -336,10 +286,9 @@ zChart.PieChart = zChart.Chart.extend({
      * @param c
      * @param item
      * @param mask
-     * @param pos
      * @private
      */
-    _drawSector: function (c, item, mask, pos) {
+    _drawSector: function (c, item, mask) {
         var config = this.config.pie;
         var theme = this.theme.pie;
         var depth = config.depth;

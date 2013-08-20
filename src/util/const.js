@@ -243,5 +243,20 @@ zChart.defaultConfig = {
             fraction: 2,
             radius: -30
         }
+    },
+    column: {
+        groupInter: 0.2,
+        columnInter: 0.1,
+        category: {
+            title: "",
+            field: "text",
+            date: false,
+            height: 25
+        },
+        serials: [{
+            title: "",
+            field: "value",
+            unit: ""
+        }]
     }
 };
