@@ -8,21 +8,19 @@ zChart.Tip = Class.extend({
         this.config = opts;
         this.theme = theme;
 
-        if (this.config.enabled !== true) {
-            return;
-        }
-
-        this._createUI();
-        this._bindEvents();
-        this.hide();
+        this.tipEl = null;
     },
     /**
      * Set tip content
      * @param data
      */
     setData: function (data) {
-        if (!this.tipEl) {
+        if (this.config.enabled !== true) {
             return;
+        }
+
+        if (!this.tipEl) {
+            this._createUI();
         }
         this.data = data;
 
@@ -42,8 +40,12 @@ zChart.Tip = Class.extend({
         var offset = 10;
         var left, top, width, height;
 
-        if (!this.tipEl) {
+        if (this.config.enabled !== true) {
             return;
+        }
+
+        if (!this.tipEl) {
+            this._createUI();
         }
 
         width = this.width;
@@ -54,6 +56,7 @@ zChart.Tip = Class.extend({
             left = x - width - offset;
             top = y - height / 2;
         }
+        // else place at right side
         else {
             left = x + offset;
             top = y - height / 2;
@@ -77,9 +80,7 @@ zChart.Tip = Class.extend({
      * Hide tip
      */
     hide: function () {
-        if (this.tipEl) {
-            this.tipEl.hide();
-        }
+        this.destroy();
     },
     /**
      * Destroy instance
@@ -96,17 +97,11 @@ zChart.Tip = Class.extend({
      * @private
      */
     _formatTip: function () {
-        var value, tip;
+        var tip;
         var config = this.config;
 
-        value = zChart.formatNumber(this.data.value, config.fraction);
-
-        tip = config.format;
-        tip = tip.replace(/<value>/g, value);
-        tip = tip.replace(/<category>/g, this.data.category);
-        tip = tip.replace(/<serial>/g, this.data.serial);
-        tip = tip.replace(/<unit>/g, this.data.unit);
-        tip = tip.replace(/<ratio>/g, this.data.ratio);
+        this.data.value = zChart.formatNumber(this.data.value, config.fraction);
+        tip = zChart.formatText(config.format, this.data);
 
         return tip;
     },
@@ -123,6 +118,8 @@ zChart.Tip = Class.extend({
             position: "absolute",
             "box-shadow": "rgba(0, 0, 0, 0.3) 1px 1px 2px 1px"
         });
+
+        this._bindEvents();
     },
     /**
      * Internal event process

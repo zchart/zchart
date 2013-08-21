@@ -217,13 +217,19 @@ zChart.defaultConfig = {
         fraction: 2
     },
     xAxis: {
-        enabled: true,
-        serials: []
+        title: "",
+        height: 30,
+        offset: 2,                      // offset to the line
+        gridCount: "auto",
+        labelRotate: 0
     },
-    yAxis: {
-        enabled: true,
-        serials: []
-    },
+    yAxis: [{
+        side: "left",
+        title: "",
+        width: null,                    // min width
+        offset: 2,                      // offset to the line
+        gridCount: "auto"
+    }],
     pie: {
         startAngle: -90,
         maxCount: 10,
@@ -245,18 +251,19 @@ zChart.defaultConfig = {
         }
     },
     column: {
-        groupInter: 0.2,
-        columnInter: 0.1,
+        columnWidth: 0.7,
+        columnInter: 3,
+        stacked: false,
+        percentStacked: false,
+        combineTip: false,
         category: {
-            title: "",
-            field: "text",
-            date: false,
-            height: 25
+            field: "",
+            parseDate: false
         },
         serials: [{
-            title: "",
-            field: "value",
-            unit: ""
+            field: "",
+            unit: "",
+            visible: true
         }]
     }
 };

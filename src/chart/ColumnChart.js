@@ -31,26 +31,25 @@ zChart.ColumnChart = zChart.XYChart.extend({
 
         data = this.data;
         this.items = [];
-        range = this._getValueRange(null, true);
-        console.log(range);
-
+        range = this._getValueRange(config.serials, false);
+console.log(range);
         groupWidth = Math.floor(plotWidth / data.length);
-        groupInter = groupWidth * 0.2;
+        groupInter = groupWidth * (1 - config.columnWidth);
 
         for (i = 0; i < data.length; i++) {
             left = Math.floor(groupWidth * i + groupInter / 2);
-            top = Math.floor(plotHeight * (1 - data[i].value / range.max));
-            width = groupWidth * 0.8;
+            top = Math.floor(plotHeight * (1 - data[i].value1 / range.top));
+            width = groupWidth * config.columnWidth;
             height = plotHeight - top;
 
             item = {
                 text: data[i].text,
-                value: data[i].value,
+                value: data[i].value1,
                 left: left,
                 top: top,
                 width: width,
                 height: height,
-                color: this.theme.chart.colors[0]
+                color: this._getColor(0)
             };
 
             this.items.push(item);
@@ -79,7 +78,7 @@ zChart.ColumnChart = zChart.XYChart.extend({
 
             //this._drawSector(this.context, item, false);
             //this._drawSector(this.contextMask, item, true);
-console.debug(item);
+//console.debug(item);
             this.context.fillStyle(item.color).fillRect(item.left, item.top, item.width, item.height);
         }
 

@@ -203,7 +203,7 @@ zChart.Chart = Class.extend({
         }
     },
     /**
-     * create a new item id
+     * Create a new item id
      * @returns {number}
      * @private
      */
@@ -214,7 +214,7 @@ zChart.Chart = Class.extend({
         return this.__item_id__++;
     },
     /**
-     * layout chart
+     * Layout chart
      * @private
      */
     _layout: function () {
@@ -276,7 +276,7 @@ zChart.Chart = Class.extend({
         });
     },
     /**
-     * create chart UI
+     * Create chart UI
      * @private
      */
     _createUI: function () {
@@ -372,7 +372,7 @@ zChart.Chart = Class.extend({
     _onLegendClick: function (event, index, flag) {
     },
     /**
-     * bind events
+     * Bind events
      * @private
      */
     _bindEvents: function () {
@@ -415,7 +415,7 @@ zChart.Chart = Class.extend({
         });
     },
     /**
-     * trigger event
+     * Trigger event
      * @param name
      * @param event
      * @param data
@@ -449,7 +449,7 @@ zChart.Chart = Class.extend({
     _draw: function () {
     },
     /**
-     * animate a object
+     * Animate a object
      * @param object
      * @param target
      * @param duration
@@ -477,7 +477,7 @@ zChart.Chart = Class.extend({
         this.animationQueue.push(animation);
     },
     /**
-     * animation loop
+     * Animation loop
      * @param timestamp
      * @private
      */
@@ -520,7 +520,7 @@ zChart.Chart = Class.extend({
         });
     },
     /**
-     * update animation item attr values
+     * Update animation item attr values
      * @param item
      * @param ts
      * @private
@@ -543,7 +543,7 @@ zChart.Chart = Class.extend({
         }
     },
     /**
-     * calculate process by linear
+     * Calculate process by linear
      * @param start
      * @param end
      * @param ratio
@@ -559,5 +559,14 @@ zChart.Chart = Class.extend({
         else {
             return end;
         }
+    },
+    /**
+     * Get serial color from theme
+     * @param idx
+     * @returns {*}
+     * @private
+     */
+    _getColor: function (idx) {
+        return this.theme.chart.colors[idx];
     }
 });

@@ -5,6 +5,8 @@
 zChart.XYChart = zChart.Chart.extend({
     init: function (opts, theme) {
         this._super(opts, theme);
+
+        this._createUI();
     },
     /**
      * Destroy chart instance
@@ -23,12 +25,12 @@ zChart.XYChart = zChart.Chart.extend({
     },
     /**
      * Get max value
-     * @param serial
-     * @param trim
+     * @param serials
+     * @param stacked
      * @returns {Object}
      * @private
      */
-    _getValueRange: function (serial, trim) {
+    _getValueRange: function (serials, stacked) {
         var data = this.data;
         var min = Number.MAX_VALUE;
         var max = Number.MIN_VALUE;
@@ -49,21 +51,62 @@ zChart.XYChart = zChart.Chart.extend({
 
         // get range
         for (i = 0; i < data.length; i++) {
-            if (!serial) {
-                for (j = 0; j < this.config.column.serials.length; j++) {
-                    value = data[i][this.config.column.serials[j].field];
+            value = 0;
+            for (j = 0; j < serials.length; j++) {
+                if (stacked) {
+                    value += data[i][serials[j].field];
+                }
+                else {
+                    value = data[i][serials[j].field];
                     check(value);
                 }
             }
-            else {
-                value = data[i][serial];
+
+            if (stacked) {
                 check(value);
             }
         }
 
         // trim to integer
+        var n = max > 0 ? max : min * -1;
+        var x, m, s;
 
-        return {min: min, max: max};
+        if (n >= 0 && n <= 1) {
+            m = 1;
+            s = 0.2;
+        }
+        else if (n > 1 && n <= 10) {
+            m = 2 * (((n + 1) / 2) >> 0);
+            s = 2;
+        }
+        else {
+            i = 0;
+            x = (n / 10) >> 0;
+            while (x > 0) {
+                i++;
+                x = (x / 10) >> 0;
+            }
+
+            s = Math.pow(10, i) / 2;
+            m = (((n / s) >> 0) + 1) * s;
+        }
+
+        var bottom, top;
+        if (max < 0) {
+            bottom = m * -1;
+            top = (((max * -1 / s) >> 0) - 1) * s * -1;
+        }
+        else {
+            top = m;
+            if (min > 0) {
+                bottom = 0;
+            }
+            else {
+                bottom = (((min * -1 / s) >> 0) + 1) * s * -1;
+            }
+        }
+
+        return {min: min, max: max, top: top, bottom: bottom, step: s, grid: (top - bottom) / s};
     },
     /**
      * Layout chart
@@ -83,5 +126,7 @@ zChart.XYChart = zChart.Chart.extend({
     },
     _createUI: function () {
         this._super();
+
+//        this.xAxis = new zChart.
     }
 });
