@@ -139,7 +139,7 @@ zChart.formatText = function (fmt, value) {
 
 /**
  * Make context2d to support link call
- * @param context
+ * @param canvas
  */
 zChart.ctx = function (canvas) {
     var fn = function (oldCtx) {
@@ -171,7 +171,21 @@ zChart.ctx = function (canvas) {
     }
 
     fn.prototype.applyTheme = function (theme) {
+        var _this = this;
 
+        if (typeof theme !== "object") {
+            return this;
+        }
+
+        for (var key in theme) {
+            if (!theme.hasOwnProperty(key) || typeof zChart.cstyleMap[key] === "undefined") {
+                continue;
+            }
+
+            _this[zChart.cstyleMap[key]](theme[key]);
+        }
+
+        return this;
     };
 
     return new fn(context);

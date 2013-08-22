@@ -1,8 +1,9 @@
 zChart.Axis = Class.extend({
-    init: function (context, opts, theme) {
+    init: function (context, opts, theme, rotate) {
         this.context = context;
         this.config = opts;
         this.theme = theme;
+        this.rotate = rotate;
 
         this.x = 0;
         this.y = 0;
@@ -12,6 +13,10 @@ zChart.Axis = Class.extend({
         this.startIndex = 0;
         this.endIndex = 0;
         this.zoom = 1;
+        this.min = 0;
+        this.max = 1;
+        this.inter = 1;
+        this.labels = [];
 
         this.bufferCanvas = $("<canvas>");
         this.buffer = zChart.ctx(this.bufferCanvas.get(0).getContext("2d"));
@@ -23,6 +28,12 @@ zChart.Axis = Class.extend({
         this.buffer = null;
         this.bufferCanvas.remove();
         this.bufferCanvas = null;
+    },
+    /**
+     * Layout content
+     */
+    layout: function () {
+
     },
     /**
      * Get current width
@@ -46,5 +57,20 @@ zChart.Axis = Class.extend({
     setPosition: function (x, y) {
         this.x = x;
         this.y = y;
+    },
+    setRange: function (min, max, grid) {
+        this.min = min;
+        this.max = max;
+        this.gridCount = grid;
+
+        this.layout();
+        this._draw();
+    },
+    redraw: function () {
+        this.layout();
+        this._draw();
+    },
+    _draw: function () {
+
     }
 });

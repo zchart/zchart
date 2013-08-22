@@ -1,5 +1,5 @@
 /**
- * Option css style-name map
+ * CSS style-name map
  */
 zChart.cssMap = {
     display: {},
@@ -43,6 +43,23 @@ zChart.cssMap = {
     },
     overflow: {},
     textOverflow: {}
+};
+
+/**
+ * Canvas style map
+ */
+zChart.cstyleMap = {
+    font: "font",
+    textAlign: "textAlign",
+    color: "fillStyle",
+    lineWidth: "lineWidth",
+    lineColor: "strokeStyle",
+    bgColor: "fillStyle",
+    shadowColor: "shadowColor",
+    shadowOffsetX: "shadowOffsetX",
+    shadowOffsetY: "shadowOffsetY",
+    shadowBlur: "shadowBlur",
+    opacity: "globalAlpha"
 };
 
 /**
@@ -141,7 +158,26 @@ zChart.defaultTheme = {
         boxShadow: "rgba(0, 0, 0, 0.3) 1px 1px 2px 1px"
     },
     xAxis: {},
-    yAxis: {},
+    yAxis: {
+        left: {
+            title: {
+                color: "#3b3b3b",
+                font: "12px Tahoma,Arial,sans-serif"
+            },
+            label: {
+                color: "#3b3b3b",
+                font: "12px Tahoma,Arial,sans-serif"
+            },
+            line: {
+                lineWidth: 1,
+                lineColor: "#666666",
+                lineStyle: "solid"          // solid/dotted/dashed/none
+            }
+        },
+        right: {
+
+        }
+    },
     /**
      * Pie chart style, canvas
      */
@@ -219,17 +255,30 @@ zChart.defaultConfig = {
     xAxis: {
         title: "",
         height: 30,
-        offset: 2,                      // offset to the line
+        offset: 4,                      // offset to the line
         gridCount: "auto",
         labelRotate: 0
     },
-    yAxis: [{
-        side: "left",
-        title: "",
-        width: null,                    // min width
-        offset: 2,                      // offset to the line
-        gridCount: "auto"
-    }],
+    yAxis: {
+        left: {
+            enabled: true,
+            width: "auto",                  // width
+            height: "auto",
+            unit: "",
+            gridCount: "auto",
+            title: {
+                text: "",
+                offset: 4
+            },
+            label: {
+                format: "<value><unit>",
+                offset: 4
+            }
+        },
+        right: {
+
+        }
+    },
     pie: {
         startAngle: -90,
         maxCount: 10,

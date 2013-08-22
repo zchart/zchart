@@ -6,6 +6,13 @@ zChart.XYChart = zChart.Chart.extend({
     init: function (opts, theme) {
         this._super(opts, theme);
 
+        this.yAxis1 = null;
+        this.yAxis2 = null;
+        this.xAxis = null;
+
+        this.yAxisRange1 = null
+        this.yAxisRange2 = null
+
         this._createUI();
     },
     /**
@@ -20,6 +27,8 @@ zChart.XYChart = zChart.Chart.extend({
      */
     setData: function (data) {
         this._super(data);
+
+        this.yAxisRange1 = this._getValueRange(this.config.column.serials, false);
         this._layoutItems(false);
         this._draw();
     },
@@ -128,5 +137,11 @@ zChart.XYChart = zChart.Chart.extend({
         this._super();
 
 //        this.xAxis = new zChart.
+
+        this.leftValueAxis = new zChart.ValueAxis(this.context,
+            this.config.yAxis.left,
+            this.theme.yAxis.left,
+            false
+        );
     }
 });
