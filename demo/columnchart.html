@@ -13,6 +13,7 @@
     <script src="../src/tip/Tip.js"></script>
     <script src="../src/axis/Axis.js"></script>
     <script src="../src/axis/ValueAxis.js"></script>
+    <script src="../src/axis/CategoryAxis.js"></script>
     <script src="../src/chart/Chart.js"></script>
     <script src="../src/chart/XYChart.js"></script>
     <script src="../src/chart/ColumnChart.js"></script>
@@ -60,6 +61,21 @@
                     gridCount: "auto",
                     parseDate: false,
                     labelRotate: 0
+                },
+                yAxis: {
+                    left: {
+                        enabled: true,
+                        unit: "%",
+                        title: {
+                            text: "测试 Title(%)"
+                        },
+                        label: {
+                            format: "<value>"
+                        }
+                    },
+                    right: {
+                        enabled: false
+                    }
                 },
                 column: {
                     category: {

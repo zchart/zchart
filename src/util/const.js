@@ -253,21 +253,27 @@ zChart.defaultConfig = {
         fraction: 2
     },
     xAxis: {
-        title: "",
+        width: "auto",
         height: 30,
-        offset: 4,                      // offset to the line
         gridCount: "auto",
-        labelRotate: 0
+        title: {
+            text: "",
+            offset: 4
+        },
+        label: {
+            offset: 4                   // offset to the line
+        }
     },
     yAxis: {
         left: {
             enabled: true,
-            width: "auto",                  // width
+            width: "auto",              // width
             height: "auto",
             unit: "",
             gridCount: "auto",
             title: {
                 text: "",
+                width: 20,
                 offset: 4
             },
             label: {
@@ -276,7 +282,7 @@ zChart.defaultConfig = {
             }
         },
         right: {
-
+            enabled: false
         }
     },
     pie: {
@@ -302,8 +308,7 @@ zChart.defaultConfig = {
     column: {
         columnWidth: 0.7,
         columnInter: 3,
-        stacked: false,
-        percentStacked: false,
+        stack: "none",                  // none/normal/percent
         combineTip: false,
         category: {
             field: "",
@@ -312,6 +317,7 @@ zChart.defaultConfig = {
         serials: [{
             field: "",
             unit: "",
+            side: "left",
             visible: true
         }]
     }

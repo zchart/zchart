@@ -181,7 +181,6 @@ zChart.ctx = function (canvas) {
             if (!theme.hasOwnProperty(key) || typeof zChart.cstyleMap[key] === "undefined") {
                 continue;
             }
-
             _this[zChart.cstyleMap[key]](theme[key]);
         }
 

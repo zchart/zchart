@@ -4,7 +4,11 @@
  */
 zChart.ColumnChart = zChart.XYChart.extend({
     init: function (opts, theme) {
+        this.rotate = false;
         this._super(opts, theme);
+
+        this.chartConfig = this.config.column;
+        this.chartTheme = this.theme.column;
 
         this.items = [];
     },
@@ -20,8 +24,8 @@ zChart.ColumnChart = zChart.XYChart.extend({
         var config = this.config.column;
         var groupValue = 0, count;
         var range;
-        var plotWidth = this.canvasEl.width();
-        var plotHeight = this.canvasEl.height();
+        var plotWidth = this.plotWidth;
+        var plotHeight = this.plotHeight;
         var left, top, width, height;
         var groupWidth, groupInter;
 
@@ -31,9 +35,9 @@ zChart.ColumnChart = zChart.XYChart.extend({
 
         data = this.data;
         this.items = [];
-        range = this._getValueRange(config.serials, false);
-console.log(range);
-        groupWidth = Math.floor(plotWidth / data.length);
+        range = this._getValueRange("left", false);
+
+        groupWidth = plotWidth / data.length;
         groupInter = groupWidth * (1 - config.columnWidth);
 
         for (i = 0; i < data.length; i++) {
@@ -49,7 +53,8 @@ console.log(range);
                 top: top,
                 width: width,
                 height: height,
-                color: this._getColor(0)
+                color: this._getColor(0),
+                maskColor: zChart.getMaskColor(0)
             };
 
             this.items.push(item);
@@ -69,31 +74,32 @@ console.log(range);
         this._clearCanvas(this.canvas);
         this._clearCanvas(this.canvasMask);
 
+        // prepare canvas
         this.context.save();
         this.contextMask.save();
+        this.context.translate(this.plotX, this.plotY);
+        this.contextMask.translate(this.plotX, this.plotY);
+
+        // draw plot background
+        this.context.save().fillStyle("#d1d2d3").fillRect(0, this.plotY, this.plotWidth, this.plotHeight).restore();
 
         // draw items
         for (i = 0; i < this.items.length; i++) {
             item = this.items[i];
 
-            //this._drawSector(this.context, item, false);
-            //this._drawSector(this.contextMask, item, true);
-//console.debug(item);
-            this.context.fillStyle(item.color).fillRect(item.left, item.top, item.width, item.height);
+            this._drawRect(this.context, item, false);
+            this._drawRect(this.contextMask, item, true);
         }
-
-//        // draw labels
-//        for (i = 0; i < this.items.length; i++) {
-//            item = this.items[i];
-//            if (item.start === item.end) {
-//                continue;
-//            }
-//
-//            this._drawLabel(this.context, item);
-//        }
 
         this.context.restore();
         this.contextMask.restore();
+
+        this.yAxisLeft._draw();
+    },
+    _drawRect: function (c, item, mask) {
+        var color = mask ? item.maskColor : item.color;
+
+        c.fillStyle(item.color).fillRect(item.left, item.top, item.width, item.height);
     }
 });
 

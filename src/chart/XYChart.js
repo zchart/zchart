@@ -4,16 +4,19 @@
  */
 zChart.XYChart = zChart.Chart.extend({
     init: function (opts, theme) {
-        this._super(opts, theme);
+        this.plotX = 0;
+        this.plotY = 0;
+        this.plotWidth = 0;
+        this.plotHeight = 0;
 
-        this.yAxis1 = null;
-        this.yAxis2 = null;
+        this.yAxisLeft = null;
+        this.yAxisRight = null;
         this.xAxis = null;
 
-        this.yAxisRange1 = null
-        this.yAxisRange2 = null
+        this.rangeLeft = null;
+        this.rangeRight = null;
 
-        this._createUI();
+        this._super(opts, theme);
     },
     /**
      * Destroy chart instance
@@ -27,20 +30,31 @@ zChart.XYChart = zChart.Chart.extend({
      */
     setData: function (data) {
         this._super(data);
+        var config = this.chartConfig;
 
-        this.yAxisRange1 = this._getValueRange(this.config.column.serials, false);
-        this._layoutItems(false);
+        this.rangeLeft = this._getValueRange("left", config.stack);
+        this.yAxisLeft.setRange(this.rangeLeft.bottom, this.rangeLeft.top, this.rangeLeft.grid);
+
+        if (this.yAxisRight) {
+            this.rangeRight = this._getValueRange("right", config.stack);
+            this.yAxisRight.setRange(this.rangeRight.bottom, this.rangeRight.top, this.rangeRight.grid);
+        }
+
+        // TODO: set category axis info
+
+        this._layout();
         this._draw();
     },
     /**
      * Get max value
-     * @param serials
+     * @param side
      * @param stacked
      * @returns {Object}
      * @private
      */
-    _getValueRange: function (serials, stacked) {
+    _getValueRange: function (side, stacked) {
         var data = this.data;
+        var serials = this.chartConfig.serials;
         var min = Number.MAX_VALUE;
         var max = Number.MIN_VALUE;
         var i, j, value;
@@ -115,6 +129,7 @@ zChart.XYChart = zChart.Chart.extend({
             }
         }
 
+//        console.log({min: min, max: max, top: top, bottom: bottom, step: s, grid: (top - bottom) / s});
         return {min: min, max: max, top: top, bottom: bottom, step: s, grid: (top - bottom) / s};
     },
     /**
@@ -123,25 +138,85 @@ zChart.XYChart = zChart.Chart.extend({
      */
     _layout: function () {
         this._super();
-        var config = this.config.pie;
 
-        this.radius = Math.min(this.canvasEl.width(), this.canvasEl.height()) / 2;
-        this.radius = this.radius - config.depth - config.expandOffset - config.margin;
-        if (config.label.radius > -8) {
-            this.radius -= config.label.radius + 8
+        var width = this.canvasEl.width();
+        var height = this.canvasEl.height();
+        var w = 0, h = 0;
+
+        if (!this.rotate) {
+            this.yAxisLeft.setHeight(height - this.xAxis.getHeight());
+            this.yAxisLeft.setPosition(0, 0);
+            w = this.yAxisLeft.getWidth();
+
+            if (this.yAxisRight) {
+                this.yAxisRight.setHeight(height - this.xAxis.getHeight());
+                this.yAxisRight.setPosition(width - this.yAxisRight.getWidth(), 0);
+                w += this.yAxisRight.getWidth();
+            }
+
+            this.xAxis.setWidth(width - w);
+            this.xAxis.setPosition(this.yAxisLeft.getWidth(), this.yAxisLeft.getHeight());
+
+            this.plotX = this.yAxisLeft.getWidth();
+            this.plotY = 0;
+            this.plotWidth = width - w;
+            this.plotHeight = height - this.xAxis.getHeight();
         }
-        this.cx = this.canvasEl.width() / 2;
-        this.cy = this.canvasEl.height() / 2;
+        else {
+            this.yAxisLeft.setWidth(width - this.xAxis.getWidth());
+            this.yAxisLeft.setPosition(this.xAxis.getWidth(), height - this.yAxisLeft.getHeight());
+            h = this.yAxisLeft.getHeight();
+
+            this.xAxis.setHeight(height - h);
+            this.xAxis.setPosition(0, 0);
+
+            this.plotX = this.xAxis.getWidth();
+            this.plotY = 0;
+            this.plotWidth = width - this.xAxis.getWidth();
+            this.plotHeight = height - this.yAxisLeft.getHeight();
+        }
+
+        this._layoutItems();
     },
+    /**
+     * Layout items
+     * @private
+     */
+    _layoutItems: function () {
+        // subclass
+    },
+    /**
+     * Create axises
+     * @private
+     */
     _createUI: function () {
+        var config = this.config;
         this._super();
 
-//        this.xAxis = new zChart.
-
-        this.leftValueAxis = new zChart.ValueAxis(this.context,
+        // create axises
+        this.yAxisLeft = new zChart.ValueAxis(
+            this.context,
             this.config.yAxis.left,
             this.theme.yAxis.left,
-            false
+            this.rotate
+        );
+
+        // right value axis. rotate chart only support one value axis
+        if (!this.rotate && config.yAxis.right && config.yAxis.right.enabled === true) {
+            this.yAxisRight = new zChart.ValueAxis(
+                this.context,
+                this.config.yAxis.right,
+                this.theme.yAxis.right,
+                this.rotate
+            );
+        }
+
+        // category axis
+        this.xAxis = new zChart.CategoryAxis(
+            this.context,
+            this.config.xAxis,
+            this.theme.xAxis,
+            this.rotate
         );
     }
 });
