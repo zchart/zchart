@@ -85,7 +85,9 @@ zChart.defaultTheme = {
      */
     title: {
         display: "block",
-        position: "relative",
+        position: "absolute",
+        left: "0",
+        top: "0",
         width: "100%",
         fontFamily: "Tahoma,Arial,sans-serif",
         overflow: "hidden",
@@ -157,12 +159,26 @@ zChart.defaultTheme = {
         opacity: 0.85,
         boxShadow: "rgba(0, 0, 0, 0.3) 1px 1px 2px 1px"
     },
-    xAxis: {},
+    xAxis: {
+        title: {
+            color: "#3b3b3b",
+            font: "12px Arial"
+        },
+        label: {
+            color: "#3b3b3b",
+            font: "12px Tahoma,Arial,sans-serif"
+        },
+        line: {
+            lineWidth: 1,
+            lineColor: "#666666",
+            lineStyle: "solid"          // solid/dashed
+        }
+    },
     yAxis: {
         left: {
             title: {
                 color: "#3b3b3b",
-                font: "12px Tahoma,Arial,sans-serif"
+                font: "12px Arial"
             },
             label: {
                 color: "#3b3b3b",
@@ -171,7 +187,7 @@ zChart.defaultTheme = {
             line: {
                 lineWidth: 1,
                 lineColor: "#666666",
-                lineStyle: "solid"          // solid/dotted/dashed/none
+                lineStyle: "solid"          // solid/dashed
             }
         },
         right: {
@@ -254,35 +270,42 @@ zChart.defaultConfig = {
     },
     xAxis: {
         width: "auto",
-        height: 30,
+        height: "auto",
         gridCount: "auto",
+        parseDate: false,
+        indLen: 4,                      // indicator short line length
         title: {
             text: "",
-            offset: 4
+            height: "auto",
+            offset: 3
         },
         label: {
-            offset: 4                   // offset to the line
+            format: "yyyy-MM-dd",       // valid when parseDate is true
+            offset: 3                   // offset to the line
         }
     },
     yAxis: {
         left: {
             enabled: true,
+            side: "left",
             width: "auto",              // width
             height: "auto",
             unit: "",
             gridCount: "auto",
+            indLen: 4,                      // indicator short line length
             title: {
                 text: "",
-                width: 20,
-                offset: 4
+                width: "auto",
+                offset: 3
             },
             label: {
                 format: "<value><unit>",
-                offset: 4
+                offset: 3
             }
         },
         right: {
-            enabled: false
+            enabled: false,
+            side: "right"
         }
     },
     pie: {
@@ -306,16 +329,17 @@ zChart.defaultConfig = {
         }
     },
     column: {
-        columnWidth: 0.7,
-        columnInter: 3,
+        groupWidth: 0.65,
+        columnInter: 2,
         stack: "none",                  // none/normal/percent
         combineTip: false,
         category: {
             field: "",
-            parseDate: false
+            text: ""
         },
         serials: [{
             field: "",
+            text: "",
             unit: "",
             side: "left",
             visible: true

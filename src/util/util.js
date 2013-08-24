@@ -1,30 +1,54 @@
 /**
+ * Log output functions
+ */
+$.extend({
+    log: function () {
+        if (window.console && window.console.log) {
+            console.log.apply(window.console, arguments);
+        }
+    },
+    debug: function () {
+        if (window.console && window.console.debug) {
+            console.debug.apply(window.console, arguments);
+        }
+    },
+    warn: function () {
+        if (window.console && window.console.warn) {
+            console.warn.apply(window.console, arguments);
+        }
+    },
+    error: function () {
+        if (window.console && window.console.error) {
+            console.error.apply(window.console, arguments);
+        }
+    },
+    trace: function () {
+        if (window.console && window.console.debug) {
+            console.debug.apply(window.console, arguments);
+        }
+    }
+});
+
+/**
  * create mask color by index
  * @param index
  * @returns {string}
  */
 zChart.getMaskColor = function (index) {
-    var r, g, b, hex;
+    var hex;
+    hex = (index + 1).toString(16);
+    hex = "000000".substr(0, 6 - hex.length) + hex;
+    return "#" + hex;
+};
 
-    index += 1;
-
-    hex = "#";
-    r = (index % 255).toString(16);
-    if (r.length < 2) {
-        r = "0" + r;
-    }
-
-    g = ((index >> 8) % 255).toString(16);
-    if (g.length < 2) {
-        g = "0" + g;
-    }
-
-    b = ((index >> 16) % 255).toString(16);
-    if (b.length < 2) {
-        b = "0" + b;
-    }
-
-    return hex + r + g + b;
+/**
+ * Get index by mask color
+ * @param color
+ */
+zChart.getMaskIndex = function (color) {
+    var hex;
+    hex = String(color).replace(/[^0-9a-f]/gi, '');
+    return parseInt(hex, 16) - 1;
 };
 
 /**
@@ -138,6 +162,27 @@ zChart.formatText = function (fmt, value) {
 };
 
 /**
+ * Format date to string
+ * @param fmt
+ * @param date
+ */
+zChart.formatDate = function (fmt, date) {
+    if (!fmt || !date) {
+        return fmt;
+    }
+
+    var tm = fmt;
+    tm = tm.replace("yyyy", date.getFullYear());
+    tm = tm.replace("MM", date.getMonth() + 1);
+    tm = tm.replace("dd", date.getDate());
+    tm = tm.replace("hh", date.getHours());
+    tm = tm.replace("mm", date.getMinutes());
+    tm = tm.replace("ss", date.getSeconds());
+
+    return tm;
+};
+
+/**
  * Make context2d to support link call
  * @param canvas
  */
@@ -170,6 +215,7 @@ zChart.ctx = function (canvas) {
         }
     }
 
+    // extend style setting
     fn.prototype.applyTheme = function (theme) {
         var _this = this;
 
@@ -184,6 +230,58 @@ zChart.ctx = function (canvas) {
             _this[zChart.cstyleMap[key]](theme[key]);
         }
 
+        return this;
+    };
+
+    // extend dash-line drawing
+    fn.prototype.dashLine = function(x, y, x2, y2, dashArray) {
+        if (!dashArray) {
+            dashArray = [10, 5];
+        }
+
+        var dashCount = dashArray.length;
+        this.context.moveTo(x, y);
+
+        var dx = (x2 - x),
+            dy = (y2 - y);
+        var slope = dx === 0 ? dy : dy / dx;
+        var distRemaining = dy === 0 ? Math.abs(dx) : dx === 0 ? Math.abs(dy) : Math.sqrt(dx * dx + dy * dy);
+        var dashIndex = 0,
+            draw = true;
+        var dashLength;
+        var xStep;
+
+        while (distRemaining >= 0.1) {
+            dashLength = dashArray[dashIndex++ % dashCount];
+            if (dashLength > distRemaining) {
+                dashLength = distRemaining;
+            }
+            if (dashLength === 0) {
+                // Hack for Safari
+                dashLength = 0.001;
+            }
+
+            if (dx === 0) {
+                y += dashLength;
+            }
+            else if (dy === 0) {
+                x += dashLength;
+            }
+            else {
+                xStep = Math.sqrt(dashLength * dashLength / (1 + slope * slope));
+                if (dx < 0) {
+                    xStep = -xStep;
+                }
+
+                x += xStep;
+                y += slope * xStep;
+            }
+
+            this.context[draw ? 'lineTo' : 'moveTo'](x, y);
+
+            distRemaining -= dashLength;
+            draw = !draw;
+        }
         return this;
     };
 
@@ -229,3 +327,22 @@ $.fn.extend({
         return this;
     }
 });
+
+/**
+ * Get date object
+ * @param tm
+ */
+zChart.getDate = function (tm) {
+    var dt;
+
+    if (tm instanceof Date) {
+        return tm;
+    }
+
+    if (typeof tm === "string") {
+        dt = Date.parse(tm);
+        return dt instanceof Date ? dt : null;
+    }
+
+    return null;
+};

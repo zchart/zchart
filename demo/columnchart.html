@@ -29,7 +29,7 @@
                 });
             }
 
-            // pie 1
+            // chart 1
             var chart1 = zChart.create({
                 chart: {
                     type: "column",
@@ -46,21 +46,21 @@
                 legend: {
                     enabled: true,
                     place: "right",
-                    width: 120
+                    width: 120,
+                    value: {
+                        type: "none"
+                    }
                 },
                 tooltip: {
-                    enabled: true
+                    enabled: true,
+                    format: "<category><br><serial>: <span style='font-size:1.2em;font-weight:bold;'><value></span> <unit>"
                 },
                 xAxis: {
-                    field: "text",
-                    title: "Category Title",
-                    height: 30,
-                    marginLeft: 0,
-                    marginRight: 0,
-                    offset: 2,                      // offset to the line
                     gridCount: "auto",
                     parseDate: false,
-                    labelRotate: 0
+                    title: {
+                        text: "Category Title"
+                    }
                 },
                 yAxis: {
                     left: {
@@ -78,11 +78,18 @@
                     }
                 },
                 column: {
+                    stack: "percent",
                     category: {
-                        field: "text"
+                        field: "text",
+                        text: "Date"
                     },
                     serials: [{
                         field: "value1",
+                        text: "KPI-1",
+                        unit: "M"
+                    }, {
+                        field: "value2",
+                        text: "KPI-2",
                         unit: "M"
                     }]
                 }

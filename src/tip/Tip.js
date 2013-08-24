@@ -130,7 +130,7 @@ zChart.Tip = Class.extend({
 
         // hide tip when hover
         this.tipEl.unbind().bind("mousemove", function () {
-            _this.hide();
+            _this.tipEl.hide();
         });
     }
 });

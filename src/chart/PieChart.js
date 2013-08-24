@@ -35,13 +35,13 @@ zChart.PieChart = zChart.Chart.extend({
         var config = this.config.pie;
         this._super();
 
-        this.radius = Math.min(this.canvasEl.width(), this.canvasEl.height()) / 2;
+        this.radius = Math.min(this.canvasWidth, this.canvasHeight) / 2;
         this.radius = this.radius - config.depth - config.expandOffset - config.margin;
         if (config.label.radius > -8) {
             this.radius -= config.label.radius + 8
         }
-        this.cx = this.canvasEl.width() / 2;
-        this.cy = this.canvasEl.height() / 2;
+        this.cx = this.canvasWidth / 2;
+        this.cy = this.canvasHeight / 2;
     },
     /**
      * Layout items
@@ -196,6 +196,9 @@ zChart.PieChart = zChart.Chart.extend({
 
         this.context.save();
         this.contextMask.save();
+        this.context.translate(this.canvasX, this.canvasY);
+        this.contextMask.translate(this.canvasX, this.canvasY);
+
         this.context.translate(this.cx, this.cy);
         this.contextMask.translate(this.cx, this.cy);
         this.context.scale(1, tilt);
@@ -384,7 +387,7 @@ zChart.PieChart = zChart.Chart.extend({
         var pos;
 
         var item = this._getItemByPosition(x, y);
-        if ((!item && this.__hover_item_id__) || (item && item.index !== this.__hover_item_id__)) {
+        if ((!item && this.__hover_item_id__ !== null) || (item && item.index !== this.__hover_item_id__)) {
             this.__hover_item_id__ = item ? item.index : null;
             this._brightenItem(item);
 

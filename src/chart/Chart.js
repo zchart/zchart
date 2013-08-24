@@ -23,6 +23,10 @@ zChart.Chart = Class.extend({
 
         this.eventMap = {};
         this.__item_id__ = 0;
+        this.canvasX = 0;
+        this.canvaxY = 0;
+        this.canvasWidth = 0;
+        this.canvasHeight = 0;
 
         // prepare animation function
         this.animationQueue = [];
@@ -148,7 +152,9 @@ zChart.Chart = Class.extend({
      */
     layout: function () {
         this._layout();
-        this._draw();
+        if (this.data) {
+            this._draw();
+        }
     },
     /**
      * Redraw whole chart
@@ -227,6 +233,12 @@ zChart.Chart = Class.extend({
         width = this.chartEl.width();
         height = this.chartEl.height();
 
+        // change canvas size
+        this.canvasEl.width(width).height(height);
+        this.canvas.attr({width: width, height: height});
+        this.canvasBuffer.attr({width: width, height: height});
+        this.canvasMask.attr({width: width, height: height});
+
         // re-layout title and legend
         this.title.layout();
         this.legend.layout();
@@ -235,7 +247,7 @@ zChart.Chart = Class.extend({
         legendWidth = this.legend.getWidth();
         legendHeight = this.legend.getHeight();
 
-        // calc canvas position
+        // calc canvas working area position
         height = height - titleHeight;
         left = 0;
         top = titleHeight;
@@ -262,18 +274,11 @@ zChart.Chart = Class.extend({
             }
         }
 
-        // change canvas size
-        this.canvasEl.width(width).height(height);
-        this.canvas.attr({width: width, height: height});
-        this.canvasBuffer.attr({width: width, height: height});
-        this.canvasMask.attr({width: width, height: height});
-
         // re-layout position
-        this.canvasEl.css({
-            position: "absolute",
-            left: left + "px",
-            top: top + "px"
-        });
+        this.canvasX = left;
+        this.canvasY = top;
+        this.canvasWidth = width;
+        this.canvasHeight = height;
     },
     /**
      * Create chart UI
@@ -287,17 +292,9 @@ zChart.Chart = Class.extend({
             this.chartEl.appendTo(this.containerEl);
         }
 
-        // title
-        this._createTitle();
-
-        // legend
-        this._createLegend();
-
-        // tooltip
-        this._createTip();
-
         // main canvas
-        this.canvasEl = $("<div>").addClass("plot").appendTo(this.chartEl);
+        this.canvasEl = $("<div>").addClass("zchart-plot").appendTo(this.chartEl);
+        this.canvasEl.css({position: "absolute", left: "0px", top: "0px"});
         this.canvas = $("<canvas>").appendTo(this.canvasEl);
         this.context = zChart.ctx(this.canvas.get(0).getContext("2d"));
 
@@ -308,6 +305,15 @@ zChart.Chart = Class.extend({
         // mask canvas for item detect
         this.canvasMask = $("<canvas>");
         this.contextMask = zChart.ctx(this.canvasMask.get(0).getContext("2d"));
+
+        // title
+        this._createTitle();
+
+        // legend
+        this._createLegend();
+
+        // tooltip
+        this._createTip();
     },
     /**
      * Create title div

@@ -4,68 +4,78 @@
 zChart.CategoryAxis = zChart.Axis.extend({
     init: function (context, opts, theme, rotate) {
         this._super(context, opts, theme, rotate);
+
+        this.data = null;
+        this.zoom = 1;
+        this.startIndex = 0;
+        this.endIndex = 0;
+    },
+    /**
+     * Set category data
+     * @param data
+     */
+    setData: function (data) {
+        this.data = data;
+        this.layout();
     },
     /**
      * Layout labels and title
      */
     layout: function () {
-        return;
         var config = this.config;
         var theme = this.theme;
-        var gridCount = config.gridCount === "auto" ? this.gridCount : config.gridCount;
-        var i, width, height, label, value, unit;
-        var step, metric, titleHeight;
+        var i, width, height, label;
+        var metric, titleHeight;
+
+        if (this.data === null) {
+            return;
+        }
 
         this.labels = [];
-        unit = config.unit;
-        step = (this.max - this.min) / gridCount;
+        this.labels.totalWidth = 0;
+        this.labels.totalHeight = 0;
 
         // get title size
         if (typeof config.title.text === "string" && config.title.text !== "") {
-            this.buffer.save().applyTheme(theme.title);
-            metric = this.buffer.measureText(config.title.text);
-            titleHeight = metric.height + config.title.offset;
-            this.buffer.restore();
+            titleHeight = config.title.offset;
+            if (config.title.height === "auto") {
+                titleHeight += parseInt(theme.title.font, 10) + 4 || 20;
+            }
+            else {
+                titleHeight += config.title.height;
+            }
         }
         else {
             titleHeight = 0;
         }
 
         // label check
-        this.buffer.save().applyTheme(theme.label);
+        this.context.save().applyTheme(theme.label);
         width = 0;
-        height = 0;
-        for (i = 0; i <= gridCount; i++) {
-            value = this.min + step * i;
-            if (this.max <= 1 && this.max > 0) {
-                value = zChart.formatNumber(value, 1);
-            }
-            else {
-                value = value.toString();
-            }
-
-            label = zChart.formatText(config.label.format, {value: value, unit: unit});
-            metric = this.buffer.measureText(label);
+        height = parseInt(theme.label.font, 10) + 4 || 20;
+        for (i = 0; i <= this.data.length; i++) {
+            label = this.data[i] || "";
+            metric = this.context.measureText(label);
             if (metric.width > width) {
-                width = metric.width;
-            }
-            if (metric.height > height) {
-                height = metric.height;
+                width = Math.ceil(metric.width);
             }
 
             this.labels.push(label);
             this.labels.width = width;
             this.labels.height = height;
+            this.labels.totalWidth += metric.width;
+            this.labels.totalHeight += height; //metric.height;
         }
-        this.buffer.restore();
+        this.context.restore();
 
-        if (!this.rotate) {
+        if (this.rotate) {
             if (config.width !== "auto" && typeof config.width === "number") {
                 this.width = config.width;
             }
             else {
                 this.width = width + titleHeight + config.label.offset;
             }
+            this.interval = Math.ceil(this.labels.totalHeight / this.height);
         }
         else {
             if (config.height !== "auto" && typeof config.height === "number") {
@@ -74,12 +84,16 @@ zChart.CategoryAxis = zChart.Axis.extend({
             else {
                 this.height = height + titleHeight + config.label.offset;
             }
+            this.interval = Math.ceil(this.labels.totalWidth / this.width);
         }
+
+        this._super();
     },
     /**
      * Draw axis
      * @private
      */
     _draw: function () {
+        this._super(this.rotate ? "vertical" : "horizon", "left", true);
     }
 });

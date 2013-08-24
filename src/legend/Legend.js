@@ -86,7 +86,7 @@ zChart.Legend = Class.extend({
             return;
         }
 
-        if (data.constructor === Array) {
+        if (data instanceof Array) {
             this.items = data;
         }
         else {
@@ -183,7 +183,7 @@ zChart.Legend = Class.extend({
 
             // label
             label = $("<label>").addClass("zchart-legend-label").appendTo(li);
-            label.text(item.text);
+            label.text(item.text).attr("title", item.text);
             label.css({
                 position: "absolute",
                 left: "20px",
@@ -195,7 +195,7 @@ zChart.Legend = Class.extend({
             });
 
             // value
-            if (config.value.format) {
+            if (config.value.type !== "none") {
                 value = $("<label>").addClass("zchart-legend-value").appendTo(li);
                 value.text(this._formatValue(item.value, config.value.fraction)).width(config.value.width);
                 value.css({
@@ -223,10 +223,7 @@ zChart.Legend = Class.extend({
      * @private
      */
     _formatTitle: function () {
-        var title = this.title;
-        title = title.replace(/<category>/g, this.category);
-        title = title.replace(/<unit>/g, this.unit);
-        return title;
+        return zChart.formatText(this.title, {category: this.category, unit: this.unit});
     },
     /**
      * Format value to string
@@ -236,10 +233,7 @@ zChart.Legend = Class.extend({
      */
     _formatValue: function (value, unit) {
         var v = zChart.formatNumber(value, this.config.value.fraction);
-        var s = this.config.value.format;
-        s = s.replace(/<unit>/g, unit);
-        s = s.replace(/<value>/g, v);
-        return s;
+        return zChart.formatText(this.config.value.format, {unit: unit, value: v});
     },
     /**
      * bind events
