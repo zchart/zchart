@@ -192,9 +192,13 @@ zChart.Axis = Class.extend({
             // text
             if (typeof this.labels[i] !== "undefined" && i % inter === 0) {
                 c.save().applyTheme(theme.label)
-                    .textBaseline(base).textAlign(align)
-                    .fillText(this.labels[i], x3, y3)
-                    .restore();
+                    .textBaseline(base).textAlign(align);
+
+                if (this.selectedIndex === i) {
+                    c.font("bold " + theme.label.font);
+                }
+
+                c.fillText(this.labels[i], x3, y3).restore();
             }
         }
 

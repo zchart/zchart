@@ -105,7 +105,7 @@ zChart.Title = Class.extend({
 
             if (config.text !== "") {
                 title.text(config.text);
-                title.css({"line-height": type === "mainTitle" ? config.height + "px" : ""});
+//                title.css({"line-height": type === "mainTitle" ? config.height + "px" : ""});
             }
             else if (config.html !== "") {
                 title.html(config.html);

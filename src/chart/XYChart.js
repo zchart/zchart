@@ -150,11 +150,12 @@ zChart.XYChart = zChart.Chart.extend({
     _layout: function () {
         this._super();
 
+        var config = this.chartConfig;
         var width = this.canvasWidth;
         var height = this.canvasHeight;
         var w = 0, h = 0;
 
-        if (!this.rotate) {
+        if (!config.rotate) {
             this.yAxisLeft.setHeight(height - this.xAxis.getHeight());
             this.yAxisLeft.setPosition(0, 0);
             w = this.yAxisLeft.getWidth();
@@ -202,6 +203,7 @@ zChart.XYChart = zChart.Chart.extend({
      */
     _createUI: function () {
         var config = this.config;
+        var chartConfig = this.chartConfig;
         this._super();
 
         // create axises
@@ -209,16 +211,16 @@ zChart.XYChart = zChart.Chart.extend({
             this.context,
             this.config.yAxis.left,
             this.theme.yAxis.left,
-            this.rotate
+            chartConfig.rotate
         );
 
         // right value axis. rotate chart only support one value axis
-        if (!this.rotate && config.yAxis.right && config.yAxis.right.enabled === true) {
+        if (!chartConfig.rotate && config.yAxis.right && config.yAxis.right.enabled === true) {
             this.yAxisRight = new zChart.ValueAxis(
                 this.context,
                 this.config.yAxis.right,
                 this.theme.yAxis.right,
-                this.rotate
+                chartConfig.rotate
             );
         }
 
@@ -227,7 +229,7 @@ zChart.XYChart = zChart.Chart.extend({
             this.context,
             this.config.xAxis,
             this.theme.xAxis,
-            this.rotate
+            chartConfig.rotate
         );
     },
     /**
@@ -243,7 +245,6 @@ zChart.XYChart = zChart.Chart.extend({
         var item = this._getItemByPosition(x, y);
         if ((!item && this.__hover_item_id__ !== null) || (item && item.index !== this.__hover_item_id__)) {
             this.__hover_item_id__ = item ? item.index : null;
-            this._brightenItem(item);
 
             if (item) {
                 this.tip.setData({
@@ -254,7 +255,13 @@ zChart.XYChart = zChart.Chart.extend({
                     ratio: item.ratio,
                     color: item.color
                 });
+                this.xAxis.selectIndex(item.categoryIndex);
             }
+            else {
+                this.xAxis.selectIndex(null);
+            }
+
+            this._brightenItem(item);
         }
 
         if (item) {

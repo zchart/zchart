@@ -31,10 +31,6 @@ zChart.Chart = Class.extend({
         // prepare animation function
         this.animationQueue = [];
 
-        // init chart
-        this._createUI();
-        this._bindEvents();
-
         // start animation loop
         this._loop(0);
     },
@@ -58,6 +54,10 @@ zChart.Chart = Class.extend({
         else {
             this.containerEl = $(id);
         }
+
+        // init chart
+        this._createUI();
+        this._bindEvents();
 
         // append chart to container
         this.chartEl.appendTo(this.containerEl);

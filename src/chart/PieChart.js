@@ -8,9 +8,6 @@ zChart.PieChart = zChart.Chart.extend({
 
         // vars
         this.items = [];
-
-        // initialize
-        this._layout();
     },
     /**
      * Destroy chart instance
@@ -32,11 +29,11 @@ zChart.PieChart = zChart.Chart.extend({
      * @private
      */
     _layout: function () {
-        var config = this.config.pie;
         this._super();
+        var config = this.config.pie;
 
         this.radius = Math.min(this.canvasWidth, this.canvasHeight) / 2;
-        this.radius = this.radius - config.depth - config.expandOffset - config.margin;
+        this.radius = this.radius - config.depth - config.expandOffset;
         if (config.label.radius > -8) {
             this.radius -= config.label.radius + 8
         }

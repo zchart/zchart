@@ -101,6 +101,7 @@ zChart.Tip = Class.extend({
         var config = this.config;
 
         this.data.value = zChart.formatNumber(this.data.value, config.fraction);
+        this.data.ratio = zChart.formatNumber(this.data.ratio, config.fraction);
         tip = zChart.formatText(config.format, this.data);
 
         return tip;

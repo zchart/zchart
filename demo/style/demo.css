@@ -1,0 +1,35 @@
+.custom {
+    display: block;
+    clear: left;
+    padding-top: 10px;
+}
+.custom * {
+    display: block;
+}
+.custom h1 {
+    font-size: 14px;
+}
+
+.option * {
+    float: left;
+}
+.option > label {
+    height: 25px;
+    line-height: 25px;
+}
+.option > label:first-child {
+    padding-right: 3px;
+    padding-left: 10px;
+    text-align: right;
+}
+.title {
+    width: 50px;
+    font-weight: bold;
+}
+
+input[type=checkbox] {
+    margin-top: 6px;
+}
+input[type=radio] {
+    margin-top: 6px;
+}

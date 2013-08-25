@@ -4,7 +4,6 @@
  */
 zChart.ColumnChart = zChart.XYChart.extend({
     init: function (opts, theme) {
-        this.rotate = false;
         this._super(opts, theme);
 
         this.chartConfig = this.config.column;
@@ -19,8 +18,8 @@ zChart.ColumnChart = zChart.XYChart.extend({
      */
     _layoutItems: function () {
         var config = this.config.column;
-        var plotWidth = this.rotate ? this.plotHeight : this.plotWidth;
-        var plotHeight = this.rotate ? this.plotWidth : this.plotHeight;
+        var plotWidth = config.rotate ? this.plotHeight : this.plotWidth;
+        var plotHeight = config.rotate ? this.plotWidth : this.plotHeight;
         var offset, left, top, width, height;
         var groupWidth, groupInter, columnWidth, columnInter;
         var serialCount = config.serials.length;
@@ -35,11 +34,14 @@ zChart.ColumnChart = zChart.XYChart.extend({
 
         this.items = [];
         stack = config.stack;
+
+        // calc group & column size
         groupWidth = plotWidth / this.data.length;
         groupInter = groupWidth * (1 - config.groupWidth);
         columnWidth = groupWidth - groupInter;
         columnInter = config.columnInter;
 
+        // if not stacked, group width is divided by serials
         if (stack !== "percent" && stack !== "normal") {
             columnWidth = (columnWidth - columnInter * (serialCount - 1)) / serialCount;
         }
@@ -67,6 +69,7 @@ zChart.ColumnChart = zChart.XYChart.extend({
                 field = config.serials[j].field;
                 serial = config.serials[j].text;
 
+                // get corresponding range
                 if (config.serials[j].side !== "right") {
                     range = this.rangeLeft;
                 }
@@ -104,6 +107,7 @@ zChart.ColumnChart = zChart.XYChart.extend({
                     text: serial,
                     value: data[field],
                     unit: config.serials[j].unit,
+                    ratio: ratio * 100,
                     left: left,
                     top: top,
                     width: width,
@@ -134,7 +138,7 @@ zChart.ColumnChart = zChart.XYChart.extend({
      * @private
      */
     _draw: function () {
-        var config = this.config.pie;
+        var config = this.chartConfig;
         var i, item;
 
         // clear canvas
@@ -157,7 +161,7 @@ zChart.ColumnChart = zChart.XYChart.extend({
         this.context.save().fillStyle("#d1d2d3").fillRect(0, this.plotY, this.plotWidth, this.plotHeight).restore();
 
         // draw items
-        if (this.rotate) {
+        if (config.rotate) {
             this.context.translate(this.plotWidth, 0).rotate(Math.PI / 2);
             this.contextMask.translate(this.plotWidth, 0).rotate(Math.PI / 2);
         }

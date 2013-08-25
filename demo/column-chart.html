@@ -17,23 +17,23 @@
     <script src="../src/chart/Chart.js"></script>
     <script src="../src/chart/XYChart.js"></script>
     <script src="../src/chart/ColumnChart.js"></script>
+    <script src="js/demo.js"></script>
     <script>
-        var chart1;
         $(function() {
             var data1 = [];
             for (var i = 0; i < 10; i++) {
                 data1.push({
                     text: 2001 + i + "",
-                    value1: Math.floor(Math.random() * 20 + 5),
-                    value2: Math.floor(Math.random() * 15 + 3)
+                    value1: Math.floor(Math.random() * 20 + 20),
+                    value2: Math.floor(Math.random() * 15 + 30)
                 });
             }
 
             // chart 1
-            var chart1 = zChart.create({
+            var option1 = {
                 chart: {
                     type: "column",
-                    width: 600,
+                    width: 800,
                     height: 300
                 },
                 title: {
@@ -53,13 +53,13 @@
                 },
                 tooltip: {
                     enabled: true,
-                    format: "<category><br><serial>: <span style='font-size:1.2em;font-weight:bold;'><value></span> <unit>"
+                    format: "<category><br><serial>: <span style='font-size:1.2em;font-weight:bold;'><ratio></span>% (<value><unit>)"
                 },
                 xAxis: {
                     gridCount: "auto",
                     parseDate: false,
                     title: {
-                        text: "Category Title"
+                        text: "Years"
                     }
                 },
                 yAxis: {
@@ -67,7 +67,7 @@
                         enabled: true,
                         unit: "%",
                         title: {
-                            text: "测试 Title(%)"
+                            text: "Volume (%)"
                         },
                         label: {
                             format: "<value>"
@@ -78,27 +78,37 @@
                     }
                 },
                 column: {
-                    stack: "percent",
+                    stack: "none",
                     category: {
                         field: "text",
-                        text: "Date"
+                        text: "Year"
                     },
                     serials: [{
                         field: "value1",
-                        text: "KPI-1",
-                        unit: "M"
+                        text: "First Half",
+                        unit: "mm"
                     }, {
                         field: "value2",
-                        text: "KPI-2",
-                        unit: "M"
+                        text: "Second Half",
+                        unit: "mm"
                     }]
                 }
-            });
+            };
+            var theme1 = {
+                chart: {
+                    colors: ["#FF7400", "#008C00"]
+                }
+            };
+            var chart1 = zChart.create(option1, theme1);
 
             chart1.render("chart-1");
             chart1.setData(data1);
+
+            // set customizable chart
+            chart = chart1;
         });
     </script>
+    <link rel="stylesheet" type="text/css" href="style/demo.css">
     <style>
         body {
             font-family: Tahoma,arial,sans-serif;
@@ -120,5 +130,43 @@
     <div id="chart-1"></div>
     <div id="chart-2"></div>
 </div>
+<div class="custom">
+    <h1>Customize Column Chart</h1>
+    <div class="option">
+        <label class="title">Options</label>
+    </div>
+    <div class="option">
+        <label>Stack Type</label>
+        <input name="stack" target="option.column" type="radio" radiogroup="stack" datatype="string" value="none" checked>
+        <label>None</label>
+        <input name="stack" target="option.column" type="radio" radiogroup="stack" datatype="string" value="normal">
+        <label>Normal</label>
+        <input name="stack" target="option.column" type="radio" radiogroup="stack" datatype="string" value="percent">
+        <label>Percent</label>
+    </div>
+    <div class="option">
+        <label></label>
+        <input name="rotate" target="option.column" type="checkbox" datatype="boolean">
+        <label>Bar Chart</label>
+    </div>
+</div>
+<div class="custom">
+    <div class="option">
+        <label class="title">Theme</label>
+    </div>
+    <div class="option">
+        <label>Category Line Width</label>
+        <input name="lineWidth" target="theme.xAxis.line" type="number" min="1" max="2" value="1" datatype="number">
+        <label>px</label>
+    </div>
+    <div class="option">
+        <label>Category Line Style</label>
+        <input name="lineStyle" target="theme.xAxis.line" type="radio" radiogroup="lineStyle" datatype="string" value="solid" checked>
+        <label>Solid</label>
+        <input name="lineStyle" target="theme.xAxis.line" type="radio" radiogroup="lineStyle" datatype="string" value="dashed">
+        <label>Dashed</label>
+    </div>
+</div>
+
 </body>
 </html>

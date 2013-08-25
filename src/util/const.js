@@ -74,7 +74,7 @@ zChart.defaultTheme = {
         position: "relative",
         fontSize: 12,
         fontFamily: "Tahoma,Arial,sans-serif",
-        margin: [0],
+        margin: [5],
         colors: ["#CC0000", "#FF7400", "#008C00", "#006E2E", "#4096EE",
             "#FF0084", "#B02B2C", "#D15600", "#C79810", "#73880A",
             "#6BBA70", "#3F4C6B", "#356AA0", "#D01F3C", "#FFFF88",
@@ -255,7 +255,7 @@ zChart.defaultConfig = {
             height: null
         },
         value: {
-            type: "last",               // last/first/average/max/min/active/none
+            type: "last",               // last/none
             fraction: 2,
             format: "<value>",
             width: null
@@ -317,7 +317,6 @@ zChart.defaultConfig = {
         expandOffset: 10,
         tilt: 0,
         depth: 0,
-        margin: 5,
         unit: "",
         innerRadius: 0,
         textField: "text",
@@ -331,6 +330,7 @@ zChart.defaultConfig = {
     column: {
         groupWidth: 0.65,
         columnInter: 2,
+        rotate: false,
         stack: "none",                  // none/normal/percent
         combineTip: false,
         category: {

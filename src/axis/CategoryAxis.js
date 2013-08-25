@@ -9,6 +9,7 @@ zChart.CategoryAxis = zChart.Axis.extend({
         this.zoom = 1;
         this.startIndex = 0;
         this.endIndex = 0;
+        this.selectedIndex = null;
     },
     /**
      * Set category data
@@ -17,6 +18,13 @@ zChart.CategoryAxis = zChart.Axis.extend({
     setData: function (data) {
         this.data = data;
         this.layout();
+    },
+    /**
+     * Set selected index
+     * @param index
+     */
+    selectIndex: function (index) {
+        this.selectedIndex = index;
     },
     /**
      * Layout labels and title
