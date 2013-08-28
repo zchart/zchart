@@ -37,7 +37,7 @@ zChart.ColumnChart = zChart.XYChart.extend({
 
         // calc group & column size
         groupWidth = plotWidth / this.data.length;
-        groupInter = groupWidth * (1 - config.groupWidth);
+        groupInter = groupWidth * (1 - config.columnWidth);
         columnWidth = groupWidth - groupInter;
         columnInter = config.columnInter;
 
@@ -101,7 +101,7 @@ zChart.ColumnChart = zChart.XYChart.extend({
 
                 item = {
                     index: i * serialCount + j,
-                    serial: j,
+                    serialIndex: j,
                     category: category,
                     categoryIndex: i,
                     text: serial,
@@ -131,7 +131,6 @@ zChart.ColumnChart = zChart.XYChart.extend({
         if (this.legend) {
             this.legend.setData({category: category, items: legend});
         }
-
     },
     /**
      * Draw chart onto canvas
@@ -158,20 +157,14 @@ zChart.ColumnChart = zChart.XYChart.extend({
         this.contextMask.translate(this.plotX, this.plotY);
 
         // draw plot background
-        this.context.save().fillStyle("#d1d2d3").fillRect(0, this.plotY, this.plotWidth, this.plotHeight).restore();
+        this._drawPlotBackground();
 
         // draw items
         if (config.rotate) {
             this.context.translate(this.plotWidth, 0).rotate(Math.PI / 2);
             this.contextMask.translate(this.plotWidth, 0).rotate(Math.PI / 2);
         }
-
-        for (i = 0; i < this.items.length; i++) {
-            item = this.items[i];
-
-            this._drawRect(this.context, item, false);
-            this._drawRect(this.contextMask, item, true);
-        }
+        this._drawItems();
 
         this.context.restore();
         this.contextMask.restore();
@@ -191,10 +184,26 @@ zChart.ColumnChart = zChart.XYChart.extend({
      * @private
      */
     _drawPlotBackground: function () {
-
+        this.context.save()
+            .fillStyle("#d1d2d3").fillRect(0, this.plotY, this.plotWidth, this.plotHeight)
+            .restore();
     },
     /**
      * Draw items
+     * @private
+     */
+    _drawItems: function () {
+        var i, item;
+
+        for (i = 0; i < this.items.length; i++) {
+            item = this.items[i];
+
+            this._drawRect(this.context, item, false);
+            this._drawRect(this.contextMask, item, true);
+        }
+    },
+    /**
+     * Draw a rect
      * @param c
      * @param item
      * @param mask

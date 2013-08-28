@@ -17,6 +17,7 @@ zChart.Axis = Class.extend({
      * Destroy object
      */
     destroy: function () {
+        this.labels = null;
     },
     /**
      * Layout content
@@ -70,8 +71,6 @@ zChart.Axis = Class.extend({
      * Set axis position
      * @param x
      * @param y
-     * @param width
-     * @param height
      */
     setPosition: function (x, y) {
         this.x = x;

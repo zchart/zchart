@@ -107,7 +107,7 @@ zChart.Chart = Class.extend({
      */
     setTheme: function (theme) {
         this.theme = $.extend(true, this.theme, theme);
-        this.redraw();
+        this._draw();
     },
     /**
      * Get current theme

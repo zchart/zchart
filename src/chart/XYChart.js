@@ -22,6 +22,18 @@ zChart.XYChart = zChart.Chart.extend({
      * Destroy chart instance
      */
     destroy: function () {
+        if (this.xAxis) {
+            this.xAxis.destroy();
+            this.xAxis = null;
+        }
+        if (this.yAxisLeft) {
+            this.yAxisLeft.destroy();
+            this.yAxisLeft = null;
+        }
+        if (this.yAxisRight) {
+            this.yAxisRight.destroy();
+            this.yAxisRight = null;
+        }
         this._super();
     },
     /**

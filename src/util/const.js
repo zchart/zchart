@@ -159,6 +159,9 @@ zChart.defaultTheme = {
         opacity: 0.85,
         boxShadow: "rgba(0, 0, 0, 0.3) 1px 1px 2px 1px"
     },
+    /**
+     * Category axis style, canvas
+     */
     xAxis: {
         title: {
             color: "#3b3b3b",
@@ -174,6 +177,9 @@ zChart.defaultTheme = {
             lineStyle: "solid"          // solid/dashed
         }
     },
+    /**
+     * Value axis style, canvas
+     */
     yAxis: {
         left: {
             title: {
@@ -225,7 +231,7 @@ zChart.defaultConfig = {
         height: "100%"
     },
     /**
-     * Title
+     * Title config
      */
     title: {
         enabled: false,
@@ -241,7 +247,7 @@ zChart.defaultConfig = {
         }
     },
     /**
-     * Legend
+     * Legend config
      */
     legend: {
         enabled: false,
@@ -263,11 +269,17 @@ zChart.defaultConfig = {
         hover: true,
         toggle: true
     },
+    /**
+     * Tooltip config
+     */
     tooltip: {
         enabled: false,
         format: "<serial>: <span style='font-size:1.2em;font-weight:bold;'><value></span> <unit>",
         fraction: 2
     },
+    /**
+     * Category axis config
+     */
     xAxis: {
         width: "auto",
         height: "auto",
@@ -284,6 +296,9 @@ zChart.defaultConfig = {
             offset: 3                   // offset to the line
         }
     },
+    /**
+     * Value axises config
+     */
     yAxis: {
         left: {
             enabled: true,
@@ -291,8 +306,10 @@ zChart.defaultConfig = {
             width: "auto",              // width
             height: "auto",
             unit: "",
+            min: null,
+            max: null,
             gridCount: "auto",
-            indLen: 4,                      // indicator short line length
+            indLen: 4,                  // indicator short line length
             title: {
                 text: "",
                 width: "auto",
@@ -308,6 +325,9 @@ zChart.defaultConfig = {
             side: "right"
         }
     },
+    /**
+     * Pie chart config
+     */
     pie: {
         startAngle: -90,
         maxCount: 10,
@@ -327,8 +347,11 @@ zChart.defaultConfig = {
             radius: -30
         }
     },
+    /**
+     * Serial chart config
+     */
     column: {
-        groupWidth: 0.65,
+        columnWidth: 0.65,
         columnInter: 2,
         rotate: false,
         stack: "none",                  // none/normal/percent
