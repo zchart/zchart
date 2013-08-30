@@ -16,6 +16,8 @@ zChart.XYChart = zChart.Chart.extend({
         this.rangeLeft = null;
         this.rangeRight = null;
 
+        this.activeSerial = null;
+
         this._super(opts, theme);
     },
     /**
@@ -42,28 +44,33 @@ zChart.XYChart = zChart.Chart.extend({
      */
     setData: function (data) {
         this._super(data);
-        var config = this.chartConfig;
-        var i;
-
-        // set axis info
-        this.rangeLeft = this._getValueRange("left", config.stack);
-        this.yAxisLeft.setRange(this.rangeLeft.bottom, this.rangeLeft.top, this.rangeLeft.grid);
-
-        if (this.yAxisRight) {
-            this.rangeRight = this._getValueRange("right", config.stack);
-            this.yAxisRight.setRange(this.rangeRight.bottom, this.rangeRight.top, this.rangeRight.grid);
-        }
-
-        // set category axis info
-        var info = [];
-        var field = config.category.field;
-        for (i = 0; i < this.data.length; i++) {
-            info.push(this.data[i][field]);
-        }
-        this.xAxis.setData(info);
-
+        this._setLegendData();
         this._layout();
         this._draw();
+    },
+    /**
+     * Set legend data
+     * @private
+     */
+    _setLegendData: function () {
+        var i;
+        var config = this.chartConfig;
+        var data = [];
+
+        if (!this.legend) {
+            return;
+        }
+
+        for (i = 0; i < config.serials.length; i++) {
+            data.push({
+                text: config.serials[i].text,
+                value: "",
+                color: this._getColor(i),
+                visible: config.serials[i].visible
+            });
+        }
+
+        this.legend.setData(data);
     },
     /**
      * Get max value
@@ -77,14 +84,24 @@ zChart.XYChart = zChart.Chart.extend({
         var serials = this.chartConfig.serials;
         var min = Number.MAX_VALUE;
         var max = Number.MIN_VALUE;
-        var i, j, value;
+        var i, j, value, n;
+        var bottom = null, top = null, grid = null;
+        var axis;
 
         if (!data || data.length === 0) {
             return {min: 0, max: 0};
         }
 
         if (stack === "percent") {
-            return {min: 0, max: 100, top: 100, bottom: 0, step: 20, grid: 5};
+            return {top: 100, bottom: 0, grid: 5};
+        }
+
+        // get axis config
+        if (side === "left") {
+            axis = this.config.yAxis.left;
+        }
+        else {
+            axis = this.config.yAxis.right;
         }
 
         var check = function (v) {
@@ -97,63 +114,93 @@ zChart.XYChart = zChart.Chart.extend({
         };
 
         // get range
-        for (i = 0; i < data.length; i++) {
-            value = 0;
-            for (j = 0; j < serials.length; j++) {
-                if (stack === "normal") {
-                    value += data[i][serials[j].field];
+        if (axis.min !== null && axis.max !== null) {
+            bottom = axis.min;
+            top = axis.max;
+        }
+        else {
+            for (i = 0; i < data.length; i++) {
+                n = 0;
+                value = 0;
+                for (j = 0; j < serials.length; j++) {
+                    // skip invisible, or other side serials
+                    if (serials[j].visible === false) {
+                        continue;
+                    }
+                    if (side === "left" && serials[j].side && serials[j].side !== side) {
+                        continue;
+                    }
+                    if (side === "right" && serials[j].side !== side) {
+                        continue;
+                    }
+
+                    if (stack === "normal") {
+                        value += data[i][serials[j].field];
+                    }
+                    else {
+                        value = data[i][serials[j].field];
+                        check(value);
+                    }
+                    n++;
                 }
-                else {
-                    value = data[i][serials[j].field];
+
+                // if no visible serials, return default
+                if (n === 0) {
+                    return {top: 1, bottom: 0, grid: 2};
+                }
+
+                if (stack === "normal") {
                     check(value);
                 }
             }
 
-            if (stack === "normal") {
-                check(value);
+            // maybe only specified one
+            if (axis.min !== null) {
+                bottom = axis.min;
+            }
+            if (axis.max !== null) {
+                top = axis.max;
             }
         }
 
-        // trim to integer
-        var n = max > 0 ? max : min * -1;
-        var x, m, s;
+        // calc bottom
+        if (bottom === null) {
+            value = Math.abs(min);
+            n = Math.ceil(value).toString();
+            bottom = parseInt(n[0], 10) * 1.1 * Math.pow(10, n.length - 1) * (min >= 0 ? 1 : -1);
 
-        if (n >= 0 && n <= 1) {
-            m = 1;
-            s = 0.2;
-        }
-        else if (n > 1 && n <= 10) {
-            m = 2 * (((n + 1) / 2) >> 0);
-            s = 2;
-        }
-        else {
-            i = 0;
-            x = (n / 10) >> 0;
-            while (x > 0) {
-                i++;
-                x = (x / 10) >> 0;
-            }
-
-            s = Math.pow(10, i) / 2;
-            m = (((n / s) >> 0) + 1) * s;
-        }
-
-        var bottom, top;
-        if (max < 0) {
-            bottom = m * -1;
-            top = (((max * -1 / s) >> 0) - 1) * s * -1;
-        }
-        else {
-            top = m;
-            if (min > 0) {
+            if (bottom > 0) {
                 bottom = 0;
             }
-            else {
-                bottom = (((min * -1 / s) >> 0) + 1) * s * -1;
+        }
+
+        if (top === null) {
+            value = Math.abs(max);
+            n = Math.floor(value).toString();
+            top = (parseInt(n[0], 10) + 1) * Math.pow(10, n.length - 1) * (min >= 0 ? 1 : -1);
+        }
+
+        // calc grid
+        if (typeof axis.grid.count === "number") {
+            grid = axis.grid.count;
+            if (grid <= 0) {
+                grid = 1;
+            }
+        }
+        else {
+            for (i = 12; i >= 4; i--) {
+                if ((top - bottom) % i === 0) {
+                    grid = i;
+                    break;
+                }
+            }
+
+            if (grid === null) {
+                grid = 5;
             }
         }
 
-        return {min: min, max: max, top: top, bottom: bottom, step: s, grid: (top - bottom) / s};
+        return {top: top, bottom: bottom, grid: grid};
     },
     /**
      * Layout chart
@@ -166,7 +213,29 @@ zChart.XYChart = zChart.Chart.extend({
         var width = this.canvasWidth;
         var height = this.canvasHeight;
         var w = 0, h = 0;
+        var i;
 
+        // re-calc range info
+        if (this.data && this.data.length > 0) {
+            // set axis info
+            this.rangeLeft = this._getValueRange("left", config.stack);
+            this.yAxisLeft.setRange(this.rangeLeft.bottom, this.rangeLeft.top, this.rangeLeft.grid);
+
+            if (this.yAxisRight) {
+                this.rangeRight = this._getValueRange("right", config.stack);
+                this.yAxisRight.setRange(this.rangeRight.bottom, this.rangeRight.top, this.rangeRight.grid);
+            }
+
+            // set category axis info
+            var info = [];
+            var field = config.category.field;
+            for (i = 0; i < this.data.length; i++) {
+                info.push(this.data[i][field]);
+            }
+            this.xAxis.setData(info);
+        }
+
+        // layout axises
         if (!config.rotate) {
             this.yAxisLeft.setHeight(height - this.xAxis.getHeight());
             this.yAxisLeft.setPosition(0, 0);
@@ -268,9 +337,11 @@ zChart.XYChart = zChart.Chart.extend({
                     color: item.color
                 });
                 this.xAxis.selectIndex(item.categoryIndex);
+                this.activeSerial = item.serialIndex;
             }
             else {
                 this.xAxis.selectIndex(null);
+                this.activeSerial = null;
             }
 
             this._brightenItem(item);
@@ -314,20 +385,6 @@ zChart.XYChart = zChart.Chart.extend({
      * @private
      */
     _onLegendHover: function (event, index, flag) {
-        var i, item = null;
-
-        if (!flag) {
-            this._brightenItem(item);
-            return;
-        }
-
-        for (i = 0; i < this.items.length; i++) {
-            if (this.items[i].index === index) {
-                item = this.items[i];
-            }
-        }
-
-        this._brightenItem(item);
     },
     /**
      * Handle legend item click event
@@ -366,64 +423,14 @@ zChart.XYChart = zChart.Chart.extend({
      * @private
      */
     _toggleItem: function (index, flag) {
-        var config = this.config.pie;
-        var cx, cy;
-        var start, end, dir, radian;
-        var offset = config.expandOffset;
-        var item;
-        var oldItems, oldItem;
+        var config = this.chartConfig;
 
-        // save old value
-        oldItems = this.items;
-        if (!flag) {
-            this.data[index]._value = this.data[index][config.valueField];
-            this.data[index][config.valueField] = 0;
-        }
-        else {
-            this.data[index][config.valueField] = this.data[index]._value;
+        if (index < 0 || index >= config.serials.length) {
+            return;
         }
 
-        // re-calc
-        this.items = [];
-        this._layoutItems(true);
-
-        // resume value
-        zChart.sortObjects(this.items, "index", true);
-        zChart.sortObjects(oldItems, "index", true);
-
-        // animate
-        for (var i = 0; i < this.items.length; i++) {
-            item = this.items[i];
-            oldItem = oldItems[i];
-
-            radian = (item.start + item.end) / 2;
-            start = item.start;
-            end = item.end;
-            dir = (start + end) / 2;
-
-            if (oldItem.cx !== 0 || oldItem.cy !== 0) {
-                cx = item.cx + offset * Math.cos(radian);
-                cy = item.cy + offset * Math.sin(radian);
-            }
-            else {
-                cx = 0;
-                cy = 0;
-            }
-
-            // set item value to old, to be the beginning of animation
-            item.start = oldItem.start;
-            item.end = oldItem.end;
-            item.cx = oldItem.cx;
-            item.cy = oldItem.cy;
-
-            this._animate(this.items[i],
-                {start: start, end: end, cx: cx, cy: cy},
-                100,
-                null);
-        }
-
-        // reset to top-down order
-        zChart.sortObjects(this.items, "dir", true);
+        config.serials[index].visible = flag;
+        this.layout();
     },
     /**
      * Split and expand a item

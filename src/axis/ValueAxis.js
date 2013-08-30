@@ -17,7 +17,7 @@ zChart.ValueAxis = zChart.Axis.extend({
     setRange: function (min, max, grid) {
         this.min = min;
         this.max = max;
-        this.gridCount = this.config.gridCount === "auto" ? grid : this.config.gridCount;
+        this.gridCount = this.config.grid.count === "auto" ? grid : this.config.grid.count;
         this.layout();
     },
     /**

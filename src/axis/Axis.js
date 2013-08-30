@@ -9,7 +9,7 @@ zChart.Axis = Class.extend({
         this.y = 0;
         this.width = 0;
         this.height = 0;
-        this.gridCount = this.config.gridCount === "auto" ? 5 : this.config.gridCount;
+        this.gridCount = this.config.grid.count === "auto" ? 5 : this.config.grid.count;
         this.labels = [];
         this.interval = 1;
     },
@@ -134,7 +134,7 @@ zChart.Axis = Class.extend({
 
         // short line and labels
         grid = this.labels.length - 1;
-        inter = this.interval;
+        inter = this.interval > this.config.grid.interval ? this.interval : this.config.grid.interval;
         if (dir === "vertical") {
             step = this.height / grid;
         }
@@ -161,12 +161,12 @@ zChart.Axis = Class.extend({
                 if (category) {
                     y1 = y2 = this.y + Math.round(i * step) + 0.5;
                     y3 = y1 + step / 2;
-                    base = "middle";
                 }
                 else {
                     y1 = y2 = y3 = this.y + this.height - Math.round(i * step) + 0.5;
-                    base = i === 0 ? "bottom" : i === grid ? "top" : "middle";
                 }
+
+                base = "middle";
             }
             else {
                 x1 = x2 = x3 = this.x + Math.round(i * step) - 0.5;
@@ -174,19 +174,20 @@ zChart.Axis = Class.extend({
                 y2 = y1 - config.indLen;
                 y3 = y1 + config.label.offset;
                 base = "top";
-                align = i === grid ? "right" : "center";
+                align = "center";
 
                 if (category) {
                     x3 = x1 + step / 2;
-                    align = "center";
                 }
             }
 
             // line
-            c.save().applyTheme(theme.line)
-                .beginPath().moveTo(x1, y1).lineTo(x2, y2)
-                .stroke()
-                .restore();
+            if (category || i % inter === 0) {
+                c.save().applyTheme(theme.line)
+                    .beginPath().moveTo(x1, y1).lineTo(x2, y2)
+                    .stroke()
+                    .restore();
+            }
 
             // text
             if (typeof this.labels[i] !== "undefined" && i % inter === 0) {

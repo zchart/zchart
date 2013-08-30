@@ -175,6 +175,9 @@ zChart.defaultTheme = {
             lineWidth: 1,
             lineColor: "#666666",
             lineStyle: "solid"          // solid/dashed
+        },
+        grid: {
+
         }
     },
     /**
@@ -283,7 +286,6 @@ zChart.defaultConfig = {
     xAxis: {
         width: "auto",
         height: "auto",
-        gridCount: "auto",
         parseDate: false,
         indLen: 4,                      // indicator short line length
         title: {
@@ -294,6 +296,10 @@ zChart.defaultConfig = {
         label: {
             format: "yyyy-MM-dd",       // valid when parseDate is true
             offset: 3                   // offset to the line
+        },
+        grid: {
+            count: "auto",
+            interval: 1
         }
     },
     /**
@@ -308,16 +314,19 @@ zChart.defaultConfig = {
             unit: "",
             min: null,
             max: null,
-            gridCount: "auto",
             indLen: 4,                  // indicator short line length
             title: {
                 text: "",
                 width: "auto",
-                offset: 3
+                offset: 3               // offset from labels
             },
             label: {
                 format: "<value><unit>",
-                offset: 3
+                offset: 3               // offset from axis line
+            },
+            grid: {
+                count: "auto",
+                interval: 1
             }
         },
         right: {
@@ -350,7 +359,7 @@ zChart.defaultConfig = {
     /**
      * Serial chart config
      */
-    column: {
+    serial: {
         columnWidth: 0.65,
         columnInter: 2,
         rotate: false,

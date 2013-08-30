@@ -6,8 +6,8 @@ zChart.ColumnChart = zChart.XYChart.extend({
     init: function (opts, theme) {
         this._super(opts, theme);
 
-        this.chartConfig = this.config.column;
-        this.chartTheme = this.theme.column;
+        this.chartConfig = this.config.serial;
+        this.chartTheme = this.theme.serial;
 
         this.items = [];
     },
@@ -17,16 +17,16 @@ zChart.ColumnChart = zChart.XYChart.extend({
      * @private
      */
     _layoutItems: function () {
-        var config = this.config.column;
+        var config = this.chartConfig;
         var plotWidth = config.rotate ? this.plotHeight : this.plotWidth;
         var plotHeight = config.rotate ? this.plotWidth : this.plotHeight;
         var offset, left, top, width, height;
-        var groupWidth, groupInter, columnWidth, columnInter;
+        var groupWidth, groupInter, columnWidth, columnWidthInt, columnInter;
         var serialCount = config.serials.length;
+        var visibleSerialCount;
         var item, data, field, stack, range;
-        var i, j, sum, ratio;
+        var i, j, serialIndex, sum, ratio;
         var category, serial;
-        var legend = [];
 
         if (!this.data || this.data.length === 0) {
             return 0;
@@ -34,6 +34,18 @@ zChart.ColumnChart = zChart.XYChart.extend({
 
         this.items = [];
         stack = config.stack;
+
+        // calc visible serial count
+        visibleSerialCount = 0;
+        for (i = 0; i < config.serials.length; i++) {
+            if (config.serials[i].visible !== false) {
+                visibleSerialCount++;
+            }
+        }
+
+        if (visibleSerialCount === 0) {
+            return;
+        }
 
         // calc group & column size
         groupWidth = plotWidth / this.data.length;
@@ -43,8 +55,11 @@ zChart.ColumnChart = zChart.XYChart.extend({
 
         // if not stacked, group width is divided by serials
         if (stack !== "percent" && stack !== "normal") {
-            columnWidth = (columnWidth - columnInter * (serialCount - 1)) / serialCount;
+            columnWidth = (columnWidth - columnInter * (visibleSerialCount - 1)) / visibleSerialCount;
         }
+
+        // get integer width
+        columnWidthInt = Math.floor(columnWidth);
 
         // groups
         for (i = 0; i < this.data.length; i++) {
@@ -65,7 +80,12 @@ zChart.ColumnChart = zChart.XYChart.extend({
             top = plotHeight;
 
             // items
+            serialIndex = 0;
             for (j = 0; j < serialCount; j++) {
+                if (config.serials[j].visible === false) {
+                    continue;
+                }
+
                 field = config.serials[j].field;
                 serial = config.serials[j].text;
 
@@ -79,23 +99,23 @@ zChart.ColumnChart = zChart.XYChart.extend({
 
                 if (stack === "percent") {
                     ratio = data[field] / sum;
-                    width = columnWidth;
+                    width = columnWidthInt;
                     height = Math.round(plotHeight * ratio);
                     left = offset;
                     top -= height;
                 }
                 else if (stack === "normal") {
                     ratio = data[field] / range.top;
-                    width = columnWidth;
+                    width = columnWidthInt;
                     height = Math.round(plotHeight * ratio);
                     left = offset;
                     top -= height;
                 }
                 else {
                     ratio = data[field] / range.top;
-                    width = columnWidth;
+                    width = columnWidthInt;
                     height = Math.round(plotHeight * ratio);
-                    left = offset + (columnWidth + columnInter) * j;
+                    left = Math.floor(offset + (columnWidth + columnInter) * serialIndex);
                     top = plotHeight - height;
                 }
 
@@ -108,28 +128,18 @@ zChart.ColumnChart = zChart.XYChart.extend({
                     value: data[field],
                     unit: config.serials[j].unit,
                     ratio: ratio * 100,
-                    left: left,
-                    top: top,
+                    left: left - 0.5,
+                    top: top - 0.5,
                     width: width,
                     height: height,
                     color: this._getColor(j),
                     maskColor: zChart.getMaskColor(i  * serialCount + j),
                     brightness: 1
                 };
+
                 this.items.push(item);
-
-                if (i === this.data.length - 1) {
-                    legend.push({
-                        text: item.text,
-                        value: item.value,
-                        color: item.color
-                    });
-                }
+                serialIndex++;
             }
-        }
-
-        if (this.legend) {
-            this.legend.setData({category: category, items: legend});
         }
     },
     /**
@@ -210,19 +220,25 @@ zChart.ColumnChart = zChart.XYChart.extend({
      * @private
      */
     _drawRect: function (c, item, mask) {
-        var color;
+        var color, stroke;
 
         if (mask) {
             color = item.maskColor;
+            stroke = item.maskColor;
         }
         else {
             color = item.color;
+            stroke = item.color;
             if (item.brightness !== 1) {
                 color = zChart.adjustLuminance(color, item.brightness - 1);
             }
         }
 
-        c.fillStyle(color).fillRect(item.left, item.top, item.width, item.height);
+        c.save()
+            .fillStyle(color).strokeStyle(stroke)
+            .fillRect(item.left, item.top, item.width, item.height)
+            .strokeRect(item.left, item.top, item.width, item.height)
+            .restore();
     }
 });
 

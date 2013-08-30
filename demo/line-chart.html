@@ -57,7 +57,6 @@
                     format: "<category><br><serial>: <span style='font-size:1.2em;font-weight:bold;'><ratio></span>% (<value><unit>)"
                 },
                 xAxis: {
-                    gridCount: "auto",
                     parseDate: false,
                     title: {
                         text: "Years"
@@ -78,7 +77,7 @@
                         enabled: false
                     }
                 },
-                column: {
+                serial: {
                     stack: "none",
                     category: {
                         field: "text",
@@ -138,16 +137,16 @@
     </div>
     <div class="option">
         <label>Stack Type</label>
-        <input name="stack" target="option.column" type="radio" radiogroup="stack" datatype="string" value="none" checked>
+        <input name="stack" target="option.serial" type="radio" radiogroup="stack" datatype="string" value="none" checked>
         <label>None</label>
-        <input name="stack" target="option.column" type="radio" radiogroup="stack" datatype="string" value="normal">
+        <input name="stack" target="option.serial" type="radio" radiogroup="stack" datatype="string" value="normal">
         <label>Normal</label>
-        <input name="stack" target="option.column" type="radio" radiogroup="stack" datatype="string" value="percent">
+        <input name="stack" target="option.serial" type="radio" radiogroup="stack" datatype="string" value="percent">
         <label>Percent</label>
     </div>
     <div class="option">
         <label></label>
-        <input name="rotate" target="option.column" type="checkbox" datatype="boolean">
+        <input name="rotate" target="option.serial" type="checkbox" datatype="boolean">
         <label>Bar Chart</label>
     </div>
 </div>

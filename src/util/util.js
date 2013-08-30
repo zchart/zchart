@@ -137,7 +137,7 @@ zChart.formatNumber = function (value, fraction) {
     }
 
     ret = aa.reverse().join("");
-    if (n.length > 1) {
+    if (n.length > 1 && fraction > 0) {
         ret += "." + n[1].substr(0, fraction);
     }
 

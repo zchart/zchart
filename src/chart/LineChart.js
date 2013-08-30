@@ -6,8 +6,8 @@ zChart.LineChart = zChart.ColumnChart.extend({
     init: function (opts, theme) {
         this._super(opts, theme);
 
-        this.chartConfig = this.config.column;
-        this.chartTheme = this.theme.column;
+        this.chartConfig = this.config.serial;
+        this.chartTheme = this.theme.serial;
     },
     /**
      * Layout items
@@ -67,15 +67,14 @@ zChart.LineChart = zChart.ColumnChart.extend({
         }
     },
     _drawLine: function (c, x1, y1, x2, y2, item, mask) {
-        var color, width;
+        var color, width = 2;
 
         if (mask) {
             color = item.maskColor;
-            width = 2;
+            width += 1;
         }
         else {
             color = item.color;
-            width = 1;
             if (item.brightness !== 1) {
                 color = zChart.adjustLuminance(color, item.brightness - 1);
                 width = 2;
@@ -87,41 +86,34 @@ zChart.LineChart = zChart.ColumnChart.extend({
             .restore();
     },
     _drawBzLine: function (c, x1, y1, x2, y2, item, mask) {
-        var color, width;
+        var color, width = 2;
         var cp1x, cp1y, cp2x, cp2y;
-        var cpx, cpy;
+
+        c.save();
 
         // calc control point
-        if (y1 >= y2) {
-            cpx = x2;
-            cpy = y1;
-        }
-        else {
-            cpx = x1;
-            cpy = y2;
-        }
-
         cp1x = cp2x = (x1 + x2) / 2;
         cp1y = y1;
         cp2y = y2;
 
         if (mask) {
             color = item.maskColor;
-            width = 2;
+            width += 1;
         }
         else {
             color = item.color;
-            width = 1;
             if (item.brightness !== 1) {
                 color = zChart.adjustLuminance(color, item.brightness - 1);
                 width = 2;
             }
         }
 
-        c.save().strokeStyle(color).lineWidth(width)
+        if (this.activeSerial === item.serialIndex) {
+            width += 1;
+        }
+
+        c.strokeStyle(color).lineWidth(width)
             .beginPath().moveTo(x1, y1)
-            //.lineTo(x2, y2)
-            //.quadraticCurveTo(cpx, cpy, x2, y2)
             .bezierCurveTo(cp1x, cp1y, cp2x, cp2y, x2, y2)
             .stroke()
             .restore();
@@ -144,7 +136,7 @@ zChart.LineChart = zChart.ColumnChart.extend({
 
         c.save().fillStyle(color).strokeStyle("#ffffff").lineWidth(1)
             .fillRect(x - width / 2, y - width / 2, width, width)
-            .strokeRect(x - width / 2, y - width / 2, width, width)
+//            .strokeRect(x - width / 2, y - width / 2, width, width)
             .restore();
     }
 });
