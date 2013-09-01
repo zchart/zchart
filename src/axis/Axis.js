@@ -32,6 +32,13 @@ zChart.Axis = Class.extend({
         return this.gridCount;
     },
     /**
+     * Get interval
+     * @returns {number}
+     */
+    getInterval: function () {
+        return this.interval > this.config.grid.interval ? this.interval : this.config.grid.interval;
+    },
+    /**
      * Get current width
      * @returns {Number}
      */
@@ -123,18 +130,13 @@ zChart.Axis = Class.extend({
             y1 = y2 = this.y + 0.5;
         }
 
-        c.save().applyTheme(theme.line).beginPath();
-        if (theme.line.lineStyle === "dashed") {
-            c.dashLine(x1, y1, x2, y2);
-        }
-        else {
-            c.moveTo(x1, y1).lineTo(x2, y2)
-        }
-        c.stroke().restore();
+        c.save().applyTheme(theme.line).beginPath()
+            .line(x1, y1, x2, y2, theme.line.lineStyle)
+            .stroke().restore();
 
         // short line and labels
         grid = this.labels.length - 1;
-        inter = this.interval > this.config.grid.interval ? this.interval : this.config.grid.interval;
+        inter = this.getInterval();
         if (dir === "vertical") {
             step = this.height / grid;
         }
@@ -182,9 +184,9 @@ zChart.Axis = Class.extend({
             }
 
             // line
-            if (category || i % inter === 0) {
+            if (i % inter === 0) {
                 c.save().applyTheme(theme.line)
-                    .beginPath().moveTo(x1, y1).lineTo(x2, y2)
+                    .beginPath().line(x1, y1, x2, y2)
                     .stroke()
                     .restore();
             }

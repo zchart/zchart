@@ -49,9 +49,9 @@ zChart.ColumnChart = zChart.XYChart.extend({
 
         // calc group & column size
         groupWidth = plotWidth / this.data.length;
-        groupInter = groupWidth * (1 - config.columnWidth);
+        groupInter = groupWidth * (1 - config.column.width);
         columnWidth = groupWidth - groupInter;
-        columnInter = config.columnInter;
+        columnInter = config.column.inter;
 
         // if not stacked, group width is divided by serials
         if (stack !== "percent" && stack !== "normal") {
@@ -100,21 +100,21 @@ zChart.ColumnChart = zChart.XYChart.extend({
                 if (stack === "percent") {
                     ratio = data[field] / sum;
                     width = columnWidthInt;
-                    height = Math.round(plotHeight * ratio);
+                    height = Math.floor(plotHeight * ratio);
                     left = offset;
                     top -= height;
                 }
                 else if (stack === "normal") {
                     ratio = data[field] / range.top;
                     width = columnWidthInt;
-                    height = Math.round(plotHeight * ratio);
+                    height = Math.floor(plotHeight * ratio);
                     left = offset;
                     top -= height;
                 }
                 else {
                     ratio = data[field] / range.top;
                     width = columnWidthInt;
-                    height = Math.round(plotHeight * ratio);
+                    height = Math.floor(plotHeight * ratio);
                     left = Math.floor(offset + (columnWidth + columnInter) * serialIndex);
                     top = plotHeight - height;
                 }
@@ -134,7 +134,7 @@ zChart.ColumnChart = zChart.XYChart.extend({
                     unit: config.serials[j].unit,
                     ratio: ratio * 100,
                     left: left + 0.5,
-                    top: top + 0.5,
+                    top: top - 0.5,
                     width: width,
                     height: height,
                     color: this._getColor(j),

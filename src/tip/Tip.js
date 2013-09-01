@@ -80,7 +80,10 @@ zChart.Tip = Class.extend({
      * Hide tip
      */
     hide: function () {
-        this.destroy();
+//        this.destroy();
+        if (this.tipEl) {
+            this.tipEl.hide();
+        }
     },
     /**
      * Destroy instance

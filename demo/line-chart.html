@@ -22,7 +22,7 @@
     <script>
         $(function() {
             var data1 = [];
-            for (var i = 0; i < 25; i++) {
+            for (var i = 0; i < 20; i++) {
                 data1.push({
                     text: 2001 + i + "",
                     value1: Math.floor(Math.random() * 20 + 20),
@@ -79,6 +79,9 @@
                 },
                 serial: {
                     stack: "none",
+                    line: {
+                        type: "sharp"               // sharp/curve
+                    },
                     category: {
                         field: "text",
                         text: "Year"
@@ -120,7 +123,7 @@
         }
         .charts > div {
             float: left;
-            background-color: #E1E2E3;
+            background-color: #F5F5F5;
             margin-right: 5px;
         }
     </style>
@@ -147,7 +150,14 @@
     <div class="option">
         <label></label>
         <input name="rotate" target="option.serial" type="checkbox" datatype="boolean">
-        <label>Bar Chart</label>
+        <label>Rotate</label>
+    </div>
+    <div class="option">
+        <label>Line Type</label>
+        <input name="type" target="option.serial.line" type="radio" radiogroup="stack" datatype="string" value="sharp" checked>
+        <label>Sharp</label>
+        <input name="type" target="option.serial.line" type="radio" radiogroup="stack" datatype="string" value="curve">
+        <label>Curve</label>
     </div>
 </div>
 <div class="custom">

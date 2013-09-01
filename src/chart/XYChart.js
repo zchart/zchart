@@ -324,8 +324,8 @@ zChart.XYChart = zChart.Chart.extend({
         var grid, i;
         var c = this.context;
         var config = this.chartConfig;
-        var theme, type;
-        var inter = 0;
+        var type;
+        var inter, interval;
 
         width = this.plotWidth;
         height = this.plotHeight;
@@ -348,10 +348,15 @@ zChart.XYChart = zChart.Chart.extend({
         axis = this.yAxisLeft;
         grid = axis.getGrid();
         inter = (config.rotate ? width : height) / grid;
+        interval = axis.getInterval();
         type = this.theme.yAxis.left.grid.lineStyle;
 
         c.save().applyTheme(this.theme.yAxis.left.grid);
         for (i = 1; i < grid; i++) {
+            if (i % interval !== 0) {
+                continue;
+            }
+
             if (!config.rotate) {
                 x1 = 0;
                 x2 = this.plotWidth;
@@ -371,10 +376,15 @@ zChart.XYChart = zChart.Chart.extend({
         axis = this.xAxis;
         grid = axis.getGrid();
         inter = (!config.rotate ? width : height) / grid;
+        interval = axis.getInterval();
         type = this.theme.xAxis.grid.lineStyle;
 
         c.save().applyTheme(this.theme.xAxis.grid);
         for (i = 1; i < grid; i++) {
+            if (i % interval !== 0) {
+                continue;
+            }
+
             if (config.rotate) {
                 x1 = 0;
                 x2 = this.plotWidth;

@@ -238,6 +238,12 @@ zChart.defaultTheme = {
         },
         background: {
             color: "transparent"
+        },
+        line: {
+            lineWidth: 2
+        },
+        area: {
+            opacity: 0.75
         }
     }
 };
@@ -308,7 +314,6 @@ zChart.defaultConfig = {
     xAxis: {
         width: "auto",
         height: "auto",
-        parseDate: false,
         indLen: 4,                      // indicator short line length
         title: {
             text: "",
@@ -382,11 +387,16 @@ zChart.defaultConfig = {
      * Serial chart config
      */
     serial: {
-        columnWidth: 0.65,
-        columnInter: 2,
         rotate: false,
         stack: "none",                  // none/normal/percent
         combineTip: false,
+        column: {
+            width: 0.65,
+            inter: 2
+        },
+        line: {
+            type: "sharp"               // sharp/curve
+        },
         category: {
             field: "",
             text: ""
@@ -396,7 +406,8 @@ zChart.defaultConfig = {
             text: "",
             unit: "",
             side: "left",
-            visible: true
+            visible: true,
+            marker: "rect"              // rect/round/diamond
         }]
     }
 };
