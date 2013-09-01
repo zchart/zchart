@@ -314,6 +314,83 @@ zChart.XYChart = zChart.Chart.extend({
         );
     },
     /**
+     * Draw background
+     * @private
+     */
+    _drawPlotBackground: function () {
+        var axis;
+        var width, height;
+        var x1, y1, x2, y2;
+        var grid, i;
+        var c = this.context;
+        var config = this.chartConfig;
+        var theme, type;
+        var inter = 0;
+
+        width = this.plotWidth;
+        height = this.plotHeight;
+
+        // fill background color
+        c.save().applyTheme(this.chartTheme.background)
+            .fillRect(0, 0, width, height)
+            .restore();
+
+        // draw plot border
+        type = this.chartTheme.border.lineStyle;
+        c.save().applyTheme(this.chartTheme.border).beginPath();
+        c.line(0.5, 0.5, 0.5 + width, 0.5, type)
+            .line(0.5 + width, 0.5, 0.5 + width, 0.5 + height, type)
+            .line(0.5 + width, 0.5 + height, 0.5, 0.5 + height, type)
+            .line(0.5, 0.5 + height, 0.5, 0.5, type)
+            .stroke().restore();
+
+        // value grids
+        axis = this.yAxisLeft;
+        grid = axis.getGrid();
+        inter = (config.rotate ? width : height) / grid;
+        type = this.theme.yAxis.left.grid.lineStyle;
+
+        c.save().applyTheme(this.theme.yAxis.left.grid);
+        for (i = 1; i < grid; i++) {
+            if (!config.rotate) {
+                x1 = 0;
+                x2 = this.plotWidth;
+                y1 = y2 = Math.round(inter * i) + 0.5;
+            }
+            else {
+                y1 = 0;
+                y2 = this.plotHeight;
+                x1 = x2 = Math.round(inter * i) + 0.5;
+            }
+
+            c.beginPath().line(x1, y1, x2, y2, type).stroke().closePath();
+        }
+        c.restore();
+
+        // category grids
+        axis = this.xAxis;
+        grid = axis.getGrid();
+        inter = (!config.rotate ? width : height) / grid;
+        type = this.theme.xAxis.grid.lineStyle;
+
+        c.save().applyTheme(this.theme.xAxis.grid);
+        for (i = 1; i < grid; i++) {
+            if (config.rotate) {
+                x1 = 0;
+                x2 = this.plotWidth;
+                y1 = y2 = Math.round(inter * i) + 0.5;
+            }
+            else {
+                y1 = 0;
+                y2 = this.plotHeight;
+                x1 = x2 = Math.round(inter * i) + 0.5;
+            }
+
+            c.beginPath().line(x1, y1, x2, y2, type).stroke().closePath();
+        }
+        c.restore();
+    },
+    /**
      * Callback for mouse move event
      * @param x
      * @param y

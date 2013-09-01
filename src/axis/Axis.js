@@ -109,7 +109,7 @@ zChart.Axis = Class.extend({
         // main line
         if (dir === "vertical") {
             if (side === "left") {
-                x1 = x2 = this.x + this.width - 0.5;
+                x1 = x2 = this.x + this.width + 0.5;
             }
             else {
                 x1 = x2 = this.x + 0.5;
@@ -146,7 +146,7 @@ zChart.Axis = Class.extend({
             // calc position
             if (dir === "vertical") {
                 if (side === "left") {
-                    x1 = this.x + this.width - 0.5;
+                    x1 = this.x + this.width + 0.5;
                     x2 = x1 + config.indLen;
                     x3 = x1 - config.label.offset;
                     align = "right";
@@ -169,7 +169,7 @@ zChart.Axis = Class.extend({
                 base = "middle";
             }
             else {
-                x1 = x2 = x3 = this.x + Math.round(i * step) - 0.5;
+                x1 = x2 = x3 = this.x + Math.round(i * step) + 0.5;
                 y1 = this.y;
                 y2 = y1 - config.indLen;
                 y3 = y1 + config.label.offset;

@@ -236,7 +236,7 @@ zChart.ctx = function (canvas) {
     // extend dash-line drawing
     fn.prototype.dashLine = function(x, y, x2, y2, dashArray) {
         if (!dashArray) {
-            dashArray = [10, 5];
+            dashArray = [5, 3];
         }
 
         var dashCount = dashArray.length;
@@ -244,7 +244,7 @@ zChart.ctx = function (canvas) {
 
         var dx = (x2 - x),
             dy = (y2 - y);
-        var slope = dx === 0 ? dy : dy / dx;
+        var slope = dx === 0 ? dy : dy === 0 ? dx : dy / dx;
         var distRemaining = dy === 0 ? Math.abs(dx) : dx === 0 ? Math.abs(dy) : Math.sqrt(dx * dx + dy * dy);
         var dashIndex = 0,
             draw = true;
@@ -262,10 +262,10 @@ zChart.ctx = function (canvas) {
             }
 
             if (dx === 0) {
-                y += dashLength;
+                y += dashLength * (dy > 0 ? 1 : -1);
             }
             else if (dy === 0) {
-                x += dashLength;
+                x += dashLength * (dx > 0 ? 1 : -1);
             }
             else {
                 xStep = Math.sqrt(dashLength * dashLength / (1 + slope * slope));
@@ -281,6 +281,21 @@ zChart.ctx = function (canvas) {
 
             distRemaining -= dashLength;
             draw = !draw;
+        }
+        return this;
+    };
+
+    // Line function
+    fn.prototype.line = function (x1, y1, x2, y2, type) {
+        if (type === "none") {
+            return this;
+        }
+        else if (type === "dashed") {
+            this.dashLine(x1, y1, x2, y2);
+        }
+        else {
+            this.context.moveTo(x1, y1);
+            this.context.lineTo(x2, y2);
         }
         return this;
     };

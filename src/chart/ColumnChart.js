@@ -119,6 +119,11 @@ zChart.ColumnChart = zChart.XYChart.extend({
                     top = plotHeight - height;
                 }
 
+                // for line chart
+                if (this.config.chart.type === "line") {
+                    left = Math.floor(offset + (columnWidth + columnInter) * 0.5);
+                }
+
                 item = {
                     index: i * serialCount + j,
                     serialIndex: j,
@@ -128,8 +133,8 @@ zChart.ColumnChart = zChart.XYChart.extend({
                     value: data[field],
                     unit: config.serials[j].unit,
                     ratio: ratio * 100,
-                    left: left - 0.5,
-                    top: top - 0.5,
+                    left: left + 0.5,
+                    top: top + 0.5,
                     width: width,
                     height: height,
                     color: this._getColor(j),
@@ -188,15 +193,6 @@ zChart.ColumnChart = zChart.XYChart.extend({
 
         this.context.restore();
         this.contextMask.restore();
-    },
-    /**
-     * Draw background
-     * @private
-     */
-    _drawPlotBackground: function () {
-        this.context.save()
-            .fillStyle("#d1d2d3").fillRect(0, this.plotY, this.plotWidth, this.plotHeight)
-            .restore();
     },
     /**
      * Draw items

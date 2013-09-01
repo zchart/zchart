@@ -177,7 +177,10 @@ zChart.defaultTheme = {
             lineStyle: "solid"          // solid/dashed
         },
         grid: {
-
+            lineWidth: 1,
+            lineColor: "#A1A1A1",
+            lineStyle: "dashed",          // solid/dashed
+            opacity: 0.5
         }
     },
     /**
@@ -197,6 +200,12 @@ zChart.defaultTheme = {
                 lineWidth: 1,
                 lineColor: "#666666",
                 lineStyle: "solid"          // solid/dashed
+            },
+            grid: {
+                lineWidth: 1,
+                lineColor: "#A1A1A1",
+                lineStyle: "dashed",          // solid/dashed
+                opacity: 0.5
             }
         },
         right: {
@@ -216,6 +225,19 @@ zChart.defaultTheme = {
             fontSize: 12,
             lineColor: "#000000",
             lineWidth: 1
+        }
+    },
+    /**
+     * Serial chart style, canvas
+     */
+    serial: {
+        border: {
+            lineWidth: 1,
+            lineColor: "#A1A1A1",
+            lineStyle: "solid"          // solid/dashed
+        },
+        background: {
+            color: "transparent"
         }
     }
 };

@@ -95,6 +95,7 @@ zChart.CategoryAxis = zChart.Axis.extend({
             this.interval = Math.ceil(this.labels.totalWidth / this.width);
         }
 
+        this.gridCount = this.labels.length - 1;
         this._super();
     },
     /**
